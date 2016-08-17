@@ -1,0 +1,105 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet">
+
+@model IPagedList<BugTracker.Models.TicketDetailsViewModel>
+
+@{
+    ViewBag.Title = "Tickets";
+}
+
+<h2>Tickets</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.Display("Title")
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>*@
+        <th>
+            @Html.Display("Created")
+        </th>
+        <th>
+            @Html.Display("Updated")
+        </th>
+        <th>
+            @Html.Display("Project")
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.TicketType)
+        </th>*@
+        <th>
+            @Html.Display("Priority")
+        </th>
+        <th>
+            @Html.Display("Status")
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.OwnerName)
+        </th>*@
+        <th>
+            @Html.Display("Assigned To")
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>*@
+        <td>
+            @*@Html.DisplayFor(modelItem => item.Created)*@
+            @*//this works to display local time but will use the same method I used to display update time to be consistent*@
+            @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt")*@       
+            @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.Updated)*@
+            @if(item.Updated != null)
+            {
+               @TimeZoneInfo.ConvertTime((DateTimeOffset)item.Updated, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+               @*@item.Updated.ToLocalTime().ToString("M/d/yy h:mm tt")// this doesn't work with a nullable DateTimeOffset*@
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProjectTitle)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.TicketType)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.TicketPriority)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TicketStatus)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.OwnerName)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.AssignedToUserName)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id = item.Id })
+            @if (User.IsInRole("Developer") || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+            {
+                @Html.Raw(" | ")
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+            }
+            @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+        </td>
+    </tr>
+}
+</table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+

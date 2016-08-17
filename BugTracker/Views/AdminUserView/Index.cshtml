@@ -1,0 +1,55 @@
+﻿@model IEnumerable<BugTracker.Models.AdminUserViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Role Assignments</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentRoles)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserEmail)
+            </td>
+            <td>
+                @if (item.CurrentRoles == null || item.CurrentRoles.Count == 0 )
+                {
+                    @Html.Raw("None assigned")
+                }
+                else
+                {
+                    foreach (var role in item.CurrentRoles)
+                    {
+                        @Html.Raw(role)
+                        @Html.Raw("<br>")
+                    }
+                }
+                @*@Html.DisplayFor(modelItem => item.RolesList)*@
+            </td>
+            <td>
+                @Html.ActionLink("Edit Roles", "Edit", new { id = item.UserId })   
+                @*@Html.ActionLink("Details", "Details", new { id = item.UserId })*@
+                @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+            </td>
+        </tr>
+    }
+
+</table>
+
