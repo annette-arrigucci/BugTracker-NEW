@@ -70,6 +70,56 @@ namespace BugTracker.Controllers
             return View(ticketDetailsList);
         }
 
+        [Authorize]
+        public ActionResult All()
+        {
+            var id = User.Identity.GetUserId();
+            var ticketDetailsList = new List<TicketDetailsViewModel>();
+            //int pageSize = 10;
+            //int pageNumber = (page ?? 1);
+
+            // if admin, view all tickets
+            if (User.IsInRole("Admin"))
+            {
+                var tickets = db.Tickets;
+                ticketDetailsList = transformTickets(db.Tickets.ToList());
+                ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
+                return View(ticketDetailsList);
+            }
+            //otherwise, go through each role a user can be in and add the tickets that can be viewed in each
+            //this does allow duplicates - tried Union but need to work on equality operator
+            else if (User.IsInRole("Project Manager"))
+            {
+                var query = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
+                var projects = query.ToList();
+                var ticketList = new List<Ticket>();
+                if (projects.Count > 0)
+                {
+                    foreach (Project p in projects)
+                    {
+                        var projTickets = p.Tickets;
+                        ticketList.AddRange(projTickets);
+                    }
+                }
+                var pmTicketDetailsList = transformTickets(ticketList);
+                ticketDetailsList.AddRange(pmTicketDetailsList);
+            }
+            if (User.IsInRole("Developer"))
+            {
+                var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
+                var devDetailsList = transformTickets(tickets.ToList());
+                ticketDetailsList.AddRange(devDetailsList);
+            }
+            if (User.IsInRole("Submitter"))
+            {
+                var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
+                var subDetailsList = transformTickets(tickets.ToList());
+                ticketDetailsList.AddRange(subDetailsList);
+            }
+            ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
+            return View(ticketDetailsList);
+        }
+
         // GET: Tickets/Details/5
         [Authorize]
         public ActionResult Details(int? id)

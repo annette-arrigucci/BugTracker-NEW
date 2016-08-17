@@ -102,11 +102,9 @@
         }
     </tbody>
 </table>
-@*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))*@
 
 @section Scripts
 {
-    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="~/DataTables/datatables.js"></script>
  
     <script>
