@@ -88,6 +88,7 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\roslyn\System.Reflection.Meta
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\roslyn\vbc.exe
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\roslyn\VBCSCompiler.exe
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\Me\projects\BugTracker-new\BugTracker\bin\BugTracker.dll.config
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\BugTracker.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\BugTracker.pdb
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Antlr3.Runtime.dll
@@ -150,7 +151,5 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.OAuth
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.csprojResolveAssemblyReference.cache
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.pdb
-C:\Users\Me\projects\BugTracker-new\BugTracker\bin\BugTracker.dll.config

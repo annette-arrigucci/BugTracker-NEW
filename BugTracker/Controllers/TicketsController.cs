@@ -10,8 +10,8 @@ using BugTracker.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Threading.Tasks;
-using PagedList;
-using PagedList.Mvc;
+//using PagedList;
+//using PagedList.Mvc;
 
 namespace BugTracker.Controllers
 {
@@ -21,12 +21,12 @@ namespace BugTracker.Controllers
 
         // GET: Tickets
         [Authorize]
-        public ActionResult Index(int? page)
+        public ActionResult Index()
         {
             var id = User.Identity.GetUserId();
             var ticketDetailsList = new List<TicketDetailsViewModel>();
-            int pageSize = 10;
-            int pageNumber = (page ?? 1);
+            //int pageSize = 10;
+            //int pageNumber = (page ?? 1);
 
             // if admin, view all tickets
             if (User.IsInRole("Admin"))
@@ -34,7 +34,7 @@ namespace BugTracker.Controllers
                 var tickets = db.Tickets;
                 ticketDetailsList = transformTickets(db.Tickets.ToList());
                 ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
-                return View(ticketDetailsList.ToPagedList(pageNumber, pageSize));
+                return View(ticketDetailsList);
             }
             //otherwise, go through each role a user can be in and add the tickets that can be viewed in each
             //this does allow duplicates - tried Union but need to work on equality operator
@@ -67,7 +67,7 @@ namespace BugTracker.Controllers
                 ticketDetailsList.AddRange(subDetailsList);
             }
             ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
-            return View(ticketDetailsList.ToPagedList(pageNumber, pageSize));
+            return View(ticketDetailsList);
         }
 
         // GET: Tickets/Details/5

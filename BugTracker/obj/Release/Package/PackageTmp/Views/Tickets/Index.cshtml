@@ -1,4 +1,9 @@
-﻿@model IEnumerable<BugTracker.Models.TicketDetailsViewModel>
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet">
+
+@model IPagedList<BugTracker.Models.TicketDetailsViewModel>
 
 @{
     ViewBag.Title = "Tickets";
@@ -12,34 +17,34 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.Display("Title")
         </th>
         @*<th>
             @Html.DisplayNameFor(model => model.Description)
         </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.Created)
+            @Html.Display("Created")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Updated)
+            @Html.Display("Updated")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectTitle)
+            @Html.Display("Project")
         </th>
         @*<th>
             @Html.DisplayNameFor(model => model.TicketType)
         </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.TicketPriority)
+            @Html.Display("Priority")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.TicketStatus)
+            @Html.Display("Status")
         </th>
         @*<th>
             @Html.DisplayNameFor(model => model.OwnerName)
         </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.AssignedToUserName)
+            @Html.Display("Assigned To")
         </th>
         <th></th>
     </tr>
@@ -95,5 +100,6 @@
         </td>
     </tr>
 }
-
 </table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+
