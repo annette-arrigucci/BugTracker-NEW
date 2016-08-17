@@ -49,5 +49,15 @@ namespace BugTracker.Models
             var userIds = System.Web.Security.Roles.GetUsersInRole(roleName);
             return userManager.Users.Where(u => !userIds.Contains(u.Id)).ToList();
         }
+        //public IList<ApplicationUser> UsersNotInRole(string roleName)
+        //{
+        //    var userIds = System.Web.Security.Roles.GetUsersInRole(roleName);
+        //    return userManager.Users.Where(u => !userIds.Contains(u.Id)).ToList();
+        //}
+        public string GetUserName (string uId)
+        {
+            var appUser = db.Users.Find(uId);
+            return appUser.FirstName + " " + appUser.LastName;
+        }
     }
 }

@@ -134,6 +134,7 @@ namespace BugTracker.Controllers
                 return HttpNotFound();
             }
             var model = new TicketDetailsViewModel(ticket);
+            ViewBag.Comments = ticket.TicketComments;
             return View(model);
         }
 
