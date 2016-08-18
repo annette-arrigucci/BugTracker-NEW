@@ -155,16 +155,17 @@ namespace BugTracker.Controllers
             {
                 model.SelectedUser = ticket.AssignedToUserId;
             }
+            //find only the developers assigned to a project - only developers can be assigned a ticket
             var helper = new ProjectUserHelper();
-            var userIDList = helper.UsersInProject(ticket.ProjectId);
-            var userInfoList = helper.getUserInfo(userIDList);
+            var developerIDList = helper.DevelopersInProject(ticket.ProjectId);
+            var developerInfoList = helper.getUserInfo(developerIDList);
             if (!string.IsNullOrEmpty(model.SelectedUser))
             {
-                model.ProjUsersList = new SelectList(userInfoList, "UserId", "UserName", model.SelectedUser);
+                model.ProjUsersList = new SelectList(developerInfoList, "UserId", "UserName", model.SelectedUser);
             }
             else
             {
-                model.ProjUsersList = new SelectList(userInfoList, "UserId", "UserName");
+                model.ProjUsersList = new SelectList(developerInfoList, "UserId", "UserName");
             }
             if (ticket == null)
             {
@@ -187,6 +188,12 @@ namespace BugTracker.Controllers
                 {
                         return RedirectToAction("Index");
                 }
+                //double check that user is a developer; if not redirect back to form
+                var helper = new UserRolesHelper();
+                if (!helper.IsUserInRole(SelectedUser, "Developer"))
+                {
+                    return RedirectToAction("AssignUser", new { id = tId });
+                }
                 //otherwise, 
                 //- update the ticket
                 //- create an entry in ticket notification table
@@ -197,9 +204,7 @@ namespace BugTracker.Controllers
                     ticket.AssignedToUserId = SelectedUser;
                     var tn = new TicketNotification { TicketId = tId, UserId = SelectedUser };
                     db.TicketNotifications.Add(tn);
-
-                    //think of a way to change the status ID here without using the ID numbers - 
-                    //otherwise this is going to look very opaque to future developers
+              
                     UpdateTicketStatusIfNew(tId);
 
                     db.Entry(ticket).State = EntityState.Modified;
@@ -216,24 +221,19 @@ namespace BugTracker.Controllers
                 return RedirectToAction("AssignUser", new { id = tId });
             }
         }
-
+        
+        //Email a user that he/she has been assigned a ticket
         public async Task SendNotificationEmail(string userId, string ticketTitle)
         {
-            var callbackUrl = Url.Action("Index", "Tickets", null, "http", "aarrigucci-bugtracker.azurewebsites.net");
-            //var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var callbackUrl = "http://aarrigucci-bugtracker.azurewebsites.net/tickets";           
             ApplicationUser user = db.Users.Find(userId);
             var es = new EmailService();
             es.SendAsync(new IdentityMessage
             {
                 Destination = user.Email,
                 Subject = "New Ticket - " + ticketTitle,
-                Body = "You have been assigned a new ticket. Click <a href=\"" + callbackUrl + "\">here</a> to view your assigned ticket."
+                Body = "You have been assigned a new ticket. Click <a href=\"" + callbackUrl + "\">here</a> to view ticket details."
             });
-            //await userManager.SendEmailAsync(userId, "New Ticket - " + ticketTitle, "You have been assigned a new ticket. Click <a href=\"" + callbackUrl + "\">here</a> to view your assigned ticket.");
-            
-            // Here we should direct the assigner to a confirmation page that says - the email was sent or the email was not sent
-            //return RedirectToAction("Index");
-            //not sure what to do here - I don't really want to return a redirect once the email is sent
         }
 
         public void UpdateTicketStatusIfNew(int tId)
@@ -333,9 +333,12 @@ namespace BugTracker.Controllers
             ticketEdit.Created = ticket.Created;
             ticketEdit.Updated = ticket.Updated;
             ticketEdit.Description = ticket.Description;
-                
+
             //setting the default selected values of the TicketEditViewModel to the current values in the ticket
-            ticketEdit.SelectedProject = ticket.ProjectId;
+            //ticketEdit.ProjectId = ticket.ProjectId;
+            //the project field is not editable
+            var project = db.Projects.Find(ticket.ProjectId);
+            ticketEdit.ProjectName = project.Name;
             ticketEdit.SelectedType = ticket.TicketTypeId;
             ticketEdit.SelectedPriority = ticket.TicketPriorityId;
             ticketEdit.SelectedStatus = ticket.TicketStatusId;
@@ -350,7 +353,7 @@ namespace BugTracker.Controllers
                ticketEdit.AssignedToUserName = "Unassigned";
             }
 
-            ticketEdit.Projects = new SelectList(db.Projects, "Id", "Name", ticketEdit.SelectedProject);//ticket.ProjectId
+            
             ticketEdit.TicketTypes = new SelectList(db.TicketTypes, "Id", "Name", ticketEdit.SelectedType);//ticket.TicketTypeId
             ticketEdit.TicketPriorities = new SelectList(db.TicketPriorities, "Id", "Name", ticketEdit.SelectedPriority);//ticket.TicketPriorityId
             ticketEdit.TicketStatuses = new SelectList(db.TicketStatuses, "Id", "Name", ticketEdit.SelectedStatus);//ticket.TicketStatusId
@@ -363,7 +366,7 @@ namespace BugTracker.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,Updated,SelectedProject,SelectedType,SelectedPriority,SelectedStatus")] TicketEditViewModel tevModel)
+        public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,Updated,SelectedType,SelectedPriority,SelectedStatus")] TicketEditViewModel tevModel)
         {
             if (ModelState.IsValid)
             {
@@ -372,12 +375,9 @@ namespace BugTracker.Controllers
                 ticket.Description = tevModel.Description;
                 ticket.Created = tevModel.Created;
                 ticket.Updated = DateTimeOffset.Now;
-                ticket.ProjectId = tevModel.SelectedProject;
                 ticket.TicketTypeId = tevModel.SelectedType;
                 ticket.TicketPriorityId = tevModel.SelectedPriority;
                 ticket.TicketStatusId = tevModel.SelectedStatus;
-                //ticket.OwnerUserId = tevModel.OwnerUserId;
-                //ticket.AssignedToUserId = tevModel.AssignedToUserId;
 
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();

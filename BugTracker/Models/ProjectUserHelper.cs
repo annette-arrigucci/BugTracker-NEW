@@ -112,6 +112,28 @@ namespace BugTracker.Models
             }
             return usersList;
         }
+
+        //return a list of developers in a project
+        public List<string> DevelopersInProject(int projectId)
+        {
+            var query = from p in db.ProjectUsers
+                        where p.ProjectId == projectId
+                        select p.UserId;
+
+            var rolesHelper = new UserRolesHelper();
+            var developersList = new List<string>();
+
+            foreach (var u in query)
+            {
+                //for each user in the project, check if they are a developer
+                if (rolesHelper.IsUserInRole(u, "Developer"))
+                {
+                    developersList.Add(u);
+                }
+            }
+            return developersList;
+        }
+
         //this returns a list of UserIDs not linked with a project
         public List<string> UsersNotInProject(int projectId)
         {
@@ -131,16 +153,8 @@ namespace BugTracker.Models
                 notStrings.Add(u.ToString());
             }
             return notStrings;
-            //var query = from p in db.ProjectUsers
-            //            where p.ProjectId != projectId
-            //            select p.UserId;
-
-            //var usersList = new List<string>();
-            //foreach (var u in query)
-            //{
-            //    usersList.Add(u);
-            //}
         }
+
         //returns a list of objects with information about a list of users given their user IDs
         public List<UserInfoViewModel> getUserInfo(List<string> userIds)
         {

@@ -37,6 +37,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketComments/Create
+        [Authorize]
         public ActionResult Create(int ticketId)
         {
             var model = new TicketComment();
@@ -67,6 +68,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketComments/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -98,6 +100,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketComments/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)

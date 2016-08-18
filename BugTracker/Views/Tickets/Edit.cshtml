@@ -40,10 +40,12 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Projects, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SelectedProject, Model.Projects, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SelectedProject, "", new { @class = "text-danger" })
+                <p class="not-editable">
+                    @Html.DisplayFor(model => model.ProjectName)
+                    @*@Html.ValidationMessageFor(model => model.SelectedProject, "", new { @class = "text-danger" })*@
+                </p>
             </div>
         </div>
 
