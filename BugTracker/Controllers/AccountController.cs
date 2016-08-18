@@ -164,6 +164,10 @@ namespace BugTracker.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    //when a register is registered, automatically assign them the role "Submitter" so they can view a submitted ticket
+                    var helper = new UserRolesHelper();
+                    helper.AddUserToRole(user.Id, "Submitter");
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
