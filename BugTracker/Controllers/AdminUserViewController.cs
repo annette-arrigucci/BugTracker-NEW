@@ -16,7 +16,7 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: AdminUserView
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var userRoles = new List<AdminUserViewModel>();
@@ -36,7 +36,7 @@ namespace BugTracker.Controllers
             return View(sortedUsers);
         }
         //get method
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public ActionResult Edit(string id)
         {
             var user = db.Users.Find(id);
@@ -78,10 +78,11 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserId,role_1,role_2,role_3,role_4")] AdminUserViewModel admModel)
+        //public ActionResult Edit([Bind(Include = "UserId,RolesToSelect,role_1,role_2,role_3,role_4")] AdminUserViewModel admModel)
+        public ActionResult Edit(string userId, bool[] selectedRoles)
         {
-            var user = db.Users.Find(admModel.UserId);
-            var id = admModel.UserId;
+            var user = db.Users.Find(userId);
+            var id = userId;
             var allRoles = new List<string>();
             UserRolesHelper helper = new UserRolesHelper();
    
@@ -92,19 +93,19 @@ namespace BugTracker.Controllers
 
             var selectedRoles = new List<string>();
 
-            if(admModel.role_1 == true)
+            if(Admin == true)
             {
                 selectedRoles.Add("Submitter");
             }
-            if (admModel.role_2 == true)
+            if (Developer == true)
             {
                 selectedRoles.Add("Developer");
             }
-            if (admModel.role_3 == true)
+            if (Submitter == true)
             {
                 selectedRoles.Add("Project Manager");
             }
-            if (admModel.role_4 == true)
+            if (PM == true)
             {
                 selectedRoles.Add("Admin");
             }
