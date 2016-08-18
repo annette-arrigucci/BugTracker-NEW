@@ -133,7 +133,52 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
+
+            var userId = User.Identity.GetUserId();
+            var helper = new ProjectUserHelper();
+
+            //if user is not an admin, who is able to view all tickets, check if they are a project manager, developer or submitter 
+            //and allowed to view the ticket. If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin"))
+            {
+                //for PM, verify it is in one of their assigned projects
+                if (User.IsInRole("Project Manager"))
+                {
+                    if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for developer - verify that they have been assigned this ticket
+                else if (User.IsInRole("Developer"))
+                {
+                    //if the ticket is unassigned, return a bad request
+                    if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    else if (!ticket.AssignedToUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for submitter - verify that they created this ticket
+                else if (User.IsInRole("Submitter"))
+                {
+                    if (!ticket.OwnerUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
             var model = new TicketDetailsViewModel(ticket);
+
+            //pass in the TicketComments with the ticket details
             ViewBag.Comments = ticket.TicketComments;
             return View(model);
         }
@@ -319,9 +364,14 @@ namespace BugTracker.Controllers
                 }
             }
             //same for developer - verify that they have been assigned this ticket and can edit it
-            if (User.IsInRole("Developer"))
+            else if (User.IsInRole("Developer"))
             {
-                if(!ticket.AssignedToUserId.Equals(userId))
+                //if string is not assigned, return a bad request
+                if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                else if (!ticket.AssignedToUserId.Equals(userId))
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
