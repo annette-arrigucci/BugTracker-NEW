@@ -17,9 +17,14 @@ namespace BugTracker.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         [Display(Name = "Roles")]
-        public MultiSelectList Roles { get; set; }
-        [Display(Name = "Current Roles")]
+        public RoleCheckBox[] RolesToSelect { get; set; }
+        //public MultiSelectList Roles { get; set; }
+        //[Display(Name = "Current Roles")]
         public IList<string> CurrentRoles { get; set; }
-        public List<string> SelectedRoles { get; set; }
+        //public List<string> SelectedRoles { get; set; }
+        public bool role_1;
+        public bool role_2;
+        public bool role_3;
+        public bool role_4;
     }
 }

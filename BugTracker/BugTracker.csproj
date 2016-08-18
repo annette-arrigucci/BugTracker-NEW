@@ -208,6 +208,7 @@
     <Compile Include="Models\AdminUserViewModel.cs" />
     <Compile Include="Models\ProjectUserHelper.cs" />
     <Compile Include="Models\ProjectUserViewModel.cs" />
+    <Compile Include="Models\RoleCheckBox.cs" />
     <Compile Include="Models\TicketAssignViewModel.cs" />
     <Compile Include="Models\TicketDetailsViewModel.cs" />
     <Compile Include="Models\TicketDetailsViewModelComparer.cs" />

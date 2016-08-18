@@ -42,8 +42,33 @@ namespace BugTracker.Controllers
             var user = db.Users.Find(id);
             AdminUserViewModel AdminModel = new AdminUserViewModel();
             UserRolesHelper helper = new UserRolesHelper();
-            var selected = helper.ListUserRoles(id);
-            AdminModel.Roles = new MultiSelectList(db.Roles, "Name", "Name", selected);
+
+            //AdminModel.Roles = new MultiSelectList(db.Roles, "Name", "Name", selected);
+            var allRoles = new List<string>();
+
+            allRoles.Add("Submitter");
+            allRoles.Add("Developer");
+            allRoles.Add("Project Manager");
+            allRoles.Add("Admin");
+
+            AdminModel.RolesToSelect = new RoleCheckBox[4];
+
+            int i = 0;
+            foreach(var role in allRoles)
+            {             
+                var checkBox = new RoleCheckBox();
+                checkBox.RoleName = role;
+                if(helper.IsUserInRole(id, role))
+                {
+                    checkBox.Checked = true;
+                } 
+                else
+                {
+                    checkBox.Checked = false;
+                }
+                AdminModel.RolesToSelect[i] = checkBox;
+                i++;
+            }
             AdminModel.UserId = user.Id;
             AdminModel.UserName = user.FirstName + " " + user.LastName;
             AdminModel.UserEmail = user.Email;
@@ -53,7 +78,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserId,SelectedRoles")] AdminUserViewModel admModel)
+        public ActionResult Edit([Bind(Include = "UserId,role_1,role_2,role_3,role_4")] AdminUserViewModel admModel)
         {
             var user = db.Users.Find(admModel.UserId);
             var id = admModel.UserId;
@@ -65,8 +90,27 @@ namespace BugTracker.Controllers
             allRoles.Add("Project Manager");
             allRoles.Add("Admin");
 
+            var selectedRoles = new List<string>();
+
+            if(admModel.role_1 == true)
+            {
+                selectedRoles.Add("Submitter");
+            }
+            if (admModel.role_2 == true)
+            {
+                selectedRoles.Add("Developer");
+            }
+            if (admModel.role_3 == true)
+            {
+                selectedRoles.Add("Project Manager");
+            }
+            if (admModel.role_4 == true)
+            {
+                selectedRoles.Add("Admin");
+            }
+
             //if no roles have been selected, remove user from all roles
-            if (admModel.SelectedRoles == null)
+            if (selectedRoles == null)
             {
                 foreach (var rRole in allRoles)
                 {
@@ -76,10 +120,10 @@ namespace BugTracker.Controllers
                     }
                 }
                 return RedirectToAction("Index");
-            }   
+            }
             else
             {
-                foreach (var sRole in admModel.SelectedRoles)
+                foreach (var sRole in selectedRoles)
                 {
                     if (!helper.IsUserInRole(admModel.UserId, sRole))
                     {
@@ -87,14 +131,46 @@ namespace BugTracker.Controllers
                     }
                 }
 
-               var rolesToRemove = allRoles.Except(admModel.SelectedRoles);
-               foreach(var rRole in rolesToRemove)
+                var rolesToRemove = allRoles.Except(selectedRoles);
+                foreach (var rRole in rolesToRemove)
                 {
                     if (helper.IsUserInRole(admModel.UserId, rRole))
                     {
                         helper.RemoveUserFromRole(admModel.UserId, rRole);
                     }
                 }
+
+
+                ////if no roles have been selected, remove user from all roles
+                //if (admModel.SelectedRoles == null)
+                //{
+                //    foreach (var rRole in allRoles)
+                //    {
+                //        if (helper.IsUserInRole(admModel.UserId, rRole))
+                //        {
+                //            helper.RemoveUserFromRole(admModel.UserId, rRole);
+                //        }
+                //    }
+                //    return RedirectToAction("Index");
+                //}   
+                //else
+                //{
+                //    foreach (var sRole in admModel.SelectedRoles)
+                //    {
+                //        if (!helper.IsUserInRole(admModel.UserId, sRole))
+                //        {
+                //            helper.AddUserToRole(admModel.UserId, sRole);
+                //        }
+                //    }
+
+                //   var rolesToRemove = allRoles.Except(admModel.SelectedRoles);
+                //   foreach(var rRole in rolesToRemove)
+                //    {
+                //        if (helper.IsUserInRole(admModel.UserId, rRole))
+                //        {
+                //            helper.RemoveUserFromRole(admModel.UserId, rRole);
+                //        }
+                //    }
                 return RedirectToAction("Index");
             }         
         }
