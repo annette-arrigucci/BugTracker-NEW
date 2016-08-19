@@ -124,6 +124,8 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.Deploymen
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.Razor.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\WebGrease.dll
+C:\Users\Me\projects\BugTracker-new\BugTracker\bin\EntityFramework.xml
+C:\Users\Me\projects\BugTracker-new\BugTracker\bin\EntityFramework.SqlServer.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Newtonsoft.Json.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\PagedList.xml
@@ -137,8 +139,6 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.Deployment.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\System.Web.WebPages.Razor.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Antlr3.Runtime.pdb
-C:\Users\Me\projects\BugTracker-new\BugTracker\bin\EntityFramework.xml
-C:\Users\Me\projects\BugTracker-new\BugTracker\bin\EntityFramework.SqlServer.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.AspNet.Identity.Core.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.AspNet.Identity.Owin.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.AspNet.Identity.EntityFramework.xml
@@ -153,4 +153,3 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.Twitt
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.pdb
-C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.csprojResolveAssemblyReference.cache

@@ -1,0 +1,193 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using BugTracker.Models;
+using Microsoft.AspNet.Identity;
+using System.IO;
+
+namespace BugTracker.Controllers
+{
+    public class TicketAttachmentsController : Controller
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: TicketAttachments
+        public ActionResult Index()
+        {
+            return View(db.TicketAttachments.ToList());
+        }
+
+        // GET: TicketAttachments/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+            if (ticketAttachment == null)
+            {
+                return HttpNotFound();
+            }
+            return View(ticketAttachment);
+        }
+
+        // GET: TicketAttachments/Create
+        public ActionResult Create(int ticketId)
+        {
+            //Make sure the user is authorized to comment on this ticket
+            var helper = new ProjectUserHelper();
+            var userId = User.Identity.GetUserId();
+            var ticket = db.Tickets.Find(ticketId);
+
+            //if user is not an admin, who is able to add attachments all tickets, check if they are a project manager, developer or submitter 
+            //and allowed to post an attachment. If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin"))
+            {
+                //for PM, verify it is in one of their assigned projects
+                if (User.IsInRole("Project Manager"))
+                {
+                    if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for developer - verify that they have been assigned this ticket
+                else if (User.IsInRole("Developer"))
+                {
+                    //if the ticket is unassigned, return a bad request
+                    if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    else if (!ticket.AssignedToUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for submitter - verify that they created this ticket
+                else if (User.IsInRole("Submitter"))
+                {
+                    if (!ticket.OwnerUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to comment
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
+
+            var model = new TicketAttachment();
+            model.TicketId = ticketId;
+            ViewBag.ticketTitle = ticket.Title;
+            return View(model);
+        }
+
+        // POST: TicketAttachments/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,TicketId,Description")] TicketAttachment ticketAttachment, HttpPostedFileBase document)
+        {
+            if (ModelState.IsValid)
+            {
+                if (document != null && document.ContentLength > 0)
+                {  //check the file name to make sure it's a file that we want                 
+                    var ext = Path.GetExtension(document.FileName).ToLower();
+                    if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".gif" && ext != ".bmp" && ext != ".doc" && ext != ".docx" && ext != ".pdf")
+                        ModelState.AddModelError("document", "Invalid Format.");
+                }
+                ticketAttachment.Created = DateTimeOffset.Now;
+                ticketAttachment.UserId = User.Identity.GetUserId();
+
+                if (document != null)
+                {
+                    var filePath = "/Uploads/";      //relative server path  - to where my machine is                   
+                    var absPath = Server.MapPath("~" + filePath);    // path on physical drive on server                      
+                    ticketAttachment.FileUrl = filePath + document.FileName;    // media url for relative path                         
+                    document.SaveAs(Path.Combine(absPath, document.FileName)); //save image
+                }
+
+                db.TicketAttachments.Add(ticketAttachment);
+                db.SaveChanges();
+                return RedirectToAction("Details", "Tickets", new { id = ticketAttachment.TicketId });
+            }
+            return View(ticketAttachment);
+        }
+
+        // GET: TicketAttachments/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+            if (ticketAttachment == null)
+            {
+                return HttpNotFound();
+            }
+            return View(ticketAttachment);
+        }
+
+        // POST: TicketAttachments/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId,FileUrl")] TicketAttachment ticketAttachment)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(ticketAttachment).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(ticketAttachment);
+        }
+
+        // GET: TicketAttachments/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+            if (ticketAttachment == null)
+            {
+                return HttpNotFound();
+            }
+            return View(ticketAttachment);
+        }
+
+        // POST: TicketAttachments/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+            db.TicketAttachments.Remove(ticketAttachment);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
