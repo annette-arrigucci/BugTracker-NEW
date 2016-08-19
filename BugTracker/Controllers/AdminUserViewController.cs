@@ -16,7 +16,7 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: AdminUserView
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var userRoles = new List<AdminUserViewModel>();
@@ -36,7 +36,7 @@ namespace BugTracker.Controllers
             return View(sortedUsers);
         }
         //get method
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(string id)
         {
             var user = db.Users.Find(id);
@@ -52,7 +52,8 @@ namespace BugTracker.Controllers
             allRoles.Add("Admin");
 
             AdminModel.RolesToSelect = new RoleCheckBox[4];
-
+            //build an array that has all user roles and whether the user is in that role
+            //this will be sent to the view
             int i = 0;
             foreach (var role in allRoles)
             {
@@ -90,8 +91,8 @@ namespace BugTracker.Controllers
             allRoles.Add("Project Manager");
             allRoles.Add("Admin");
 
+            //build a list of selected roles based on the array in the model that was returned
             var selectedRoles = new List<string>();
-
             for (int i = 0; i < admModel.RolesToSelect.Length; i++)
             {
                 if (admModel.RolesToSelect[i].Checked == true)

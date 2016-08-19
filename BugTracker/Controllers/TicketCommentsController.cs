@@ -40,12 +40,58 @@ namespace BugTracker.Controllers
         [Authorize]
         public ActionResult Create(int ticketId)
         {
+            //Make sure the user is authorized to comment on this ticket
+            var helper = new ProjectUserHelper();
+            var userId = User.Identity.GetUserId();
+            var ticket = db.Tickets.Find(ticketId);
+
+            //if user is not an admin, who is able to comment on all tickets, check if they are a project manager, developer or submitter 
+            //and allowed to post a comment. If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin"))
+            {
+                //for PM, verify it is in one of their assigned projects
+                if (User.IsInRole("Project Manager"))
+                {
+                    if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for developer - verify that they have been assigned this ticket
+                else if (User.IsInRole("Developer"))
+                {
+                    //if the ticket is unassigned, return a bad request
+                    if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    else if (!ticket.AssignedToUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for submitter - verify that they created this ticket
+                else if (User.IsInRole("Submitter"))
+                {
+                    if (!ticket.OwnerUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to comment
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
+
             var model = new TicketComment();
             model.TicketId = ticketId;
-            var query = from p in db.Tickets
-                        where p.Id == ticketId
-                        select p.Title;
-            ViewBag.ticketTitle = query.FirstOrDefault();
+            //var query = from p in db.Tickets
+            //            where p.Id == ticketId
+            //            select p.Title;
+            ViewBag.ticketTitle = ticket.Title;
+                //query.FirstOrDefault();
             return View(model);
         }
 
