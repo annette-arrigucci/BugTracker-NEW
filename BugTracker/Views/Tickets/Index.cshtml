@@ -8,9 +8,12 @@
 
 <h2>Tickets Dashboard</h2>
 
+<br />
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<br />
+
 <table class="table" id="tickets-table">
     <thead>
         <tr>
@@ -109,7 +112,9 @@
     </tbody>
 </table>
 
-@Html.ActionLink("View full ticket directory", "All", "Tickets")
+<br />
+    @Html.ActionLink("View full ticket directory", "All", "Tickets")
+<br />
 
 @section Scripts
 {

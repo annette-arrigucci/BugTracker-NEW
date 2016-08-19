@@ -2,9 +2,9 @@
 
 @using BugTracker.Models;
 
-<div id="show-attachments">
-    <br /><br />
-    <h3>Attachments</h3>
+@*<div id="show-attachments">*@
+    @*<br /><br />
+    <h3>Attachments</h3>*@
     @if (Model != null && Model.Any())
     {
         foreach (var item in Model)
@@ -13,27 +13,29 @@
             {
                 <p><a href="@item.FileUrl" target="_blank">@item.FileName</a></p>
             }
-            <p>@Html.Raw(item.Description)</p>
+            @Html.Raw(item.Description)
+            <br />
             if (!string.IsNullOrEmpty(item.UserId))
             {
                 //using the UserRolesHelper class to get the user's name
                 var helper = new UserRolesHelper();
                 var userName = helper.GetUserName(item.UserId);
-                <p><b>Added by @userName</b></p>
+                <b>Added by @userName</b>
             }
-            <p class="date"><b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b></p>
-            if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
+            <br />
+            <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b>
+            if (User.IsInRole("Admin"))
             {
                 <p>
                     @Html.ActionLink("Edit", "Edit", "TicketAttachments", new { id = item.Id }, null) |
                     @Html.ActionLink("Delete", "Delete", "TicketAttachments", new { id = item.Id }, null)
                 </p>
             }
-            <br />
         }
     }
     else
     {
-        @Html.Raw("<p>No attachments</p><br /><br />")
+        @Html.Raw("No attachments<br>")
     }
-</div>
+    
+@*</div>*@

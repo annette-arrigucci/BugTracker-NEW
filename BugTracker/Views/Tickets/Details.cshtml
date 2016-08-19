@@ -1,5 +1,7 @@
 ﻿@model BugTracker.Models.TicketDetailsViewModel
 
+<link href="~/Content/form-style.css" rel="stylesheet">
+
 @{
     ViewBag.Title = "Ticket Details";
 }
@@ -12,95 +14,84 @@
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Title)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Description)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Created)
         </dt>
-
         <dd>
             @TimeZoneInfo.ConvertTime(Model.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Updated)
         </dt>
-
         <dd>
             @if (Model.Updated != null)
             {
                 @TimeZoneInfo.ConvertTime((DateTimeOffset)Model.Updated, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
             }
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.ProjectTitle)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.ProjectTitle)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.TicketType)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.TicketType)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.TicketPriority)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.TicketPriority)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.TicketStatus)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.TicketStatus)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.OwnerName)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.OwnerName)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.AssignedToUserName)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.AssignedToUserName)
+            @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+            {
+                @Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                @Html.ActionLink("Edit", "AssignUser", new { id = Model.Id }, new { htmlAttributes = new { @class = "form-control" } })
+            }
         </dd>
-
+        <dt>
+            @Html.DisplayName("Attachments")
+        </dt>
+        <dd>
+            @Html.Partial("_ShowAttachments", (IEnumerable<BugTracker.Models.TicketAttachment>)ViewBag.Attachments)
+            @Html.ActionLink("Add Attachment", "Create", "TicketAttachments", new { ticketId = Model.Id }, new { @class = "btn btn-default" })
+        </dd>
+        <dt></dt>
+        <dd><br />@Html.ActionLink("Edit Ticket", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })</dd>       
     </dl>
+    @Html.ActionLink("Back to Ticket List", "Index")
+    
 </div>
-
 @Html.Partial("_ShowComments", (IEnumerable<BugTracker.Models.TicketComment>)ViewBag.Comments)
-@Html.Partial("_ShowAttachments", (IEnumerable<BugTracker.Models.TicketAttachment>)ViewBag.Attachments)
+@Html.ActionLink("Add Comment", "Create", "TicketComments", new { ticketId = Model.Id }, new { @class = "btn btn-default" } )  
 
-<p>
-    @Html.ActionLink("Add Comment", "Create", "TicketComments", new { ticketId = Model.Id }, new { @class = "btn btn-default" } )
-    @Html.ActionLink("Add Attachment", "Create", "TicketAttachments", new { ticketId = Model.Id }, new { @class = "btn btn-default" })
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

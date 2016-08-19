@@ -17,14 +17,14 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: TicketAttachments
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View(db.TicketAttachments.ToList());
         }
 
         // GET: TicketAttachments/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -131,7 +131,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -163,7 +163,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
