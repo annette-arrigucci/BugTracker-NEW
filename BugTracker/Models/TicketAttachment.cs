@@ -10,7 +10,7 @@ namespace BugTracker.Models
     {
         public int Id { get; set; }
         public int TicketId { get; set; }
-        public string FilePath { get; set; }
+        public string FileName { get; set; }
         [Required(ErrorMessage = "Please enter a description")]
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }

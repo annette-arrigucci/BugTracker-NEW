@@ -96,6 +96,7 @@
 </div>
 
 @Html.Partial("_ShowComments", (IEnumerable<BugTracker.Models.TicketComment>)ViewBag.Comments)
+@Html.Partial("_ShowAttachments", (IEnumerable<BugTracker.Models.TicketAttachment>)ViewBag.Attachments)
 
 <p>
     @Html.ActionLink("Add Comment", "Create", "TicketComments", new { ticketId = Model.Id }, new { @class = "btn btn-default" } )

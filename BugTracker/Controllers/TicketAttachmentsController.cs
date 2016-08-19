@@ -98,14 +98,17 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,TicketId,Description")] TicketAttachment ticketAttachment, HttpPostedFileBase document)
         {
+            if (document != null && document.ContentLength > 0)
+            {  //check the file name to make sure it's a file that we want                 
+                var ext = Path.GetExtension(document.FileName).ToLower();
+                if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".gif" && ext != ".bmp" && ext != ".doc" && ext != ".docx" && ext != ".pdf")
+                {
+                    ModelState.AddModelError("document", "Invalid Format.");
+                }            
+            }
             if (ModelState.IsValid)
             {
-                if (document != null && document.ContentLength > 0)
-                {  //check the file name to make sure it's a file that we want                 
-                    var ext = Path.GetExtension(document.FileName).ToLower();
-                    if (ext != ".png" && ext != ".jpg" && ext != ".jpeg" && ext != ".gif" && ext != ".bmp" && ext != ".doc" && ext != ".docx" && ext != ".pdf")
-                        ModelState.AddModelError("document", "Invalid Format.");
-                }
+                ticketAttachment.FileName = document.FileName;
                 ticketAttachment.Created = DateTimeOffset.Now;
                 ticketAttachment.UserId = User.Identity.GetUserId();
 

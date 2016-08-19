@@ -180,6 +180,7 @@ namespace BugTracker.Controllers
 
             //pass in the TicketComments with the ticket details
             ViewBag.Comments = ticket.TicketComments;
+            ViewBag.Attachments = ticket.TicketAttachments;
             return View(model);
         }
 
