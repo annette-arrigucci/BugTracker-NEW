@@ -22,9 +22,6 @@ namespace BugTracker.Models
         //[Display(Name = "Current Roles")]
         public IList<string> CurrentRoles { get; set; }
         //public List<string> SelectedRoles { get; set; }
-        public bool role_1;
-        public bool role_2;
-        public bool role_3;
-        public bool role_4;
+        //public bool[] SelectedRoles { get; set; }
     }
 }

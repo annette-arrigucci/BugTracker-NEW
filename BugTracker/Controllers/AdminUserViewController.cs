@@ -20,7 +20,7 @@ namespace BugTracker.Controllers
         public ActionResult Index()
         {
             var userRoles = new List<AdminUserViewModel>();
-            foreach(ApplicationUser user in db.Users)
+            foreach (ApplicationUser user in db.Users)
             {
                 var myUser = new AdminUserViewModel();
                 UserRolesHelper helper = new UserRolesHelper();
@@ -54,14 +54,14 @@ namespace BugTracker.Controllers
             AdminModel.RolesToSelect = new RoleCheckBox[4];
 
             int i = 0;
-            foreach(var role in allRoles)
-            {             
+            foreach (var role in allRoles)
+            {
                 var checkBox = new RoleCheckBox();
                 checkBox.RoleName = role;
-                if(helper.IsUserInRole(id, role))
+                if (helper.IsUserInRole(id, role))
                 {
                     checkBox.Checked = true;
-                } 
+                }
                 else
                 {
                     checkBox.Checked = false;
@@ -78,14 +78,13 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "UserId,RolesToSelect,role_1,role_2,role_3,role_4")] AdminUserViewModel admModel)
-        public ActionResult Edit(string userId, bool[] selectedRoles)
+        public ActionResult Edit([Bind(Include = "UserId,RolesToSelect")] AdminUserViewModel admModel)
         {
-            var user = db.Users.Find(userId);
-            var id = userId;
+            var user = db.Users.Find(admModel.UserId);
+            var id = admModel.UserId;
             var allRoles = new List<string>();
             UserRolesHelper helper = new UserRolesHelper();
-   
+
             allRoles.Add("Submitter");
             allRoles.Add("Developer");
             allRoles.Add("Project Manager");
@@ -93,21 +92,12 @@ namespace BugTracker.Controllers
 
             var selectedRoles = new List<string>();
 
-            if(Admin == true)
+            for (int i = 0; i < admModel.RolesToSelect.Length; i++)
             {
-                selectedRoles.Add("Submitter");
-            }
-            if (Developer == true)
-            {
-                selectedRoles.Add("Developer");
-            }
-            if (Submitter == true)
-            {
-                selectedRoles.Add("Project Manager");
-            }
-            if (PM == true)
-            {
-                selectedRoles.Add("Admin");
+                if (admModel.RolesToSelect[i].Checked == true)
+                {
+                    selectedRoles.Add(admModel.RolesToSelect[i].RoleName);
+                }
             }
 
             //if no roles have been selected, remove user from all roles
@@ -140,40 +130,8 @@ namespace BugTracker.Controllers
                         helper.RemoveUserFromRole(admModel.UserId, rRole);
                     }
                 }
-
-
-                ////if no roles have been selected, remove user from all roles
-                //if (admModel.SelectedRoles == null)
-                //{
-                //    foreach (var rRole in allRoles)
-                //    {
-                //        if (helper.IsUserInRole(admModel.UserId, rRole))
-                //        {
-                //            helper.RemoveUserFromRole(admModel.UserId, rRole);
-                //        }
-                //    }
-                //    return RedirectToAction("Index");
-                //}   
-                //else
-                //{
-                //    foreach (var sRole in admModel.SelectedRoles)
-                //    {
-                //        if (!helper.IsUserInRole(admModel.UserId, sRole))
-                //        {
-                //            helper.AddUserToRole(admModel.UserId, sRole);
-                //        }
-                //    }
-
-                //   var rolesToRemove = allRoles.Except(admModel.SelectedRoles);
-                //   foreach(var rRole in rolesToRemove)
-                //    {
-                //        if (helper.IsUserInRole(admModel.UserId, rRole))
-                //        {
-                //            helper.RemoveUserFromRole(admModel.UserId, rRole);
-                //        }
-                //    }
                 return RedirectToAction("Index");
-            }         
+            }
         }
     }
 }
