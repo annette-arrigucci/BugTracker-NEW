@@ -17,12 +17,14 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: TicketAttachments
+        [Authorize]
         public ActionResult Index()
         {
             return View(db.TicketAttachments.ToList());
         }
 
         // GET: TicketAttachments/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -38,14 +40,15 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Create
+        [Authorize]
         public ActionResult Create(int ticketId)
         {
-            //Make sure the user is authorized to comment on this ticket
+            //Make sure the user is authorized to add an attachment on this ticket
             var helper = new ProjectUserHelper();
             var userId = User.Identity.GetUserId();
             var ticket = db.Tickets.Find(ticketId);
 
-            //if user is not an admin, who is able to add attachments all tickets, check if they are a project manager, developer or submitter 
+            //if user is not an admin, who is able to add attachments to all tickets, check if they are a project manager, developer or submitter 
             //and allowed to post an attachment. If not, redirect them to a "bad request" page
             if (!User.IsInRole("Admin"))
             {
@@ -128,6 +131,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -159,6 +163,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)

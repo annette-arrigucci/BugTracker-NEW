@@ -17,9 +17,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Description)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Created)
             </th>
@@ -52,11 +52,12 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @*@Html.DisplayFor(modelItem => item.Title)*@
+                    @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
                 </td>
-                <td>
+                @*<td>
                     @Html.DisplayFor(modelItem => item.Description)
-                </td>
+                </td>*@
                 <td>
                     @*@Html.DisplayFor(modelItem => item.Created)*@
                     @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt") //this works to display local time but
@@ -90,8 +91,17 @@
                     @Html.DisplayFor(modelItem => item.AssignedToUserName)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    @if (User.IsInRole("Developer") || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                    {
+                        @Html.Raw("<br>")
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    }
+                    @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                    {
+                        @Html.Raw("<br>")
+                        @Html.ActionLink("Assign", "AssignUser", new { id = item.Id })
+                    }
                     @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
                 </td>
             </tr>

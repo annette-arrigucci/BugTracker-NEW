@@ -30,12 +30,33 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.LabelFor(model => model.Roles, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.ListBox("SelectedRoles", Model.Roles)
                 @Html.ValidationMessageFor(model => model.SelectedRoles, "", new { @class = "text-danger" })
             </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RolesToSelect, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @for (int i = 0; i < Model.RolesToSelect.Length; i++)
+                {
+                    <p>
+                    @*@Html.CheckBoxFor(m => m.RolesToSelect[i].Checked, new { id = "role_" + (i + 1) })
+                    @Html.HiddenFor(m => m.RolesToSelect[i].RoleName)
+                    @Html.DisplayFor(m => m.RolesToSelect[i].RoleName)*@
+                     @*@Html.CheckBoxFor(x => x.RolesToSelect[i].Checked, new { id = "role_" + (i + 1), @name = "role_" + (i + 1), @value = "role_" + (i + 1) })*@
+                     @Html.CheckBoxFor(m => Model.RolesToSelect[i].Checked)
+                     @Html.HiddenFor(m => Model.RolesToSelect[i].RoleName)
+                     @Html.DisplayFor(m => Model.RolesToSelect[i].RoleName)
+
+                     @*<input checked="@Model.RolesToSelect[i].Checked" id="@Model.RolesToSelect[i].RoleName" type="checkbox" value="@Model.RolesToSelect[i].RoleName" name="@Model.RolesToSelect[i].RoleName" />
+                     <input type="hidden" value="false" name="@Model.RolesToSelect[i].RoleName" />*@
+                   </p>
+                }
+            </div>          
         </div>
 
         <div class="form-group">

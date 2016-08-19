@@ -16,12 +16,14 @@ namespace BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: TicketComments
+        [Authorize]
         public ActionResult Index()
         {
             return View(db.TicketComments.ToList());
         }
 
         // GET: TicketComments/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)

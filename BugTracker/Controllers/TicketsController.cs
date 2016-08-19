@@ -25,8 +25,6 @@ namespace BugTracker.Controllers
         {
             var id = User.Identity.GetUserId();
             var ticketDetailsList = new List<TicketDetailsViewModel>();
-            //int pageSize = 10;
-            //int pageNumber = (page ?? 1);
 
             // if admin, view all tickets
             if (User.IsInRole("Admin"))
@@ -75,8 +73,6 @@ namespace BugTracker.Controllers
         {
             var id = User.Identity.GetUserId();
             var ticketDetailsList = new List<TicketDetailsViewModel>();
-            //int pageSize = 10;
-            //int pageNumber = (page ?? 1);
 
             // if admin, view all tickets
             if (User.IsInRole("Admin"))
@@ -193,16 +189,29 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var model = new TicketAssignViewModel();
+            //check that project manager is assigning a ticket that is in one of their projects
+            var helper = new ProjectUserHelper();
+            var userId = User.Identity.GetUserId();
             Ticket ticket = db.Tickets.Find(id);
+
+            if (User.IsInRole("Project Manager"))
+            {
+                if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
+
+            //otherwise assume that user is an admin
+            var model = new TicketAssignViewModel();
+            
             model.TicketDetails = new TicketDetailsViewModel(ticket);
             
             if(!string.IsNullOrEmpty(ticket.AssignedToUserId))
             {
                 model.SelectedUser = ticket.AssignedToUserId;
             }
-            //find only the developers assigned to a project - only developers can be assigned a ticket
-            var helper = new ProjectUserHelper();
+            //find only the developers assigned to a project - only developers can be assigned a ticket        
             var developerIDList = helper.DevelopersInProject(ticket.ProjectId);
             var developerInfoList = helper.getUserInfo(developerIDList);
             if (!string.IsNullOrEmpty(model.SelectedUser))
@@ -306,7 +315,6 @@ namespace BugTracker.Controllers
             ticketView.Projects = new SelectList(db.Projects, "Id", "Name");
             ticketView.TicketTypes = new SelectList(db.TicketTypes, "Id", "Name");
             ticketView.TicketPriorities = new SelectList(db.TicketPriorities, "Id", "Name");
-            //ticketView.TicketStatuses = new SelectList(db.TicketStatuses, "Id", "Name");
             return View(ticketView);
         }
 

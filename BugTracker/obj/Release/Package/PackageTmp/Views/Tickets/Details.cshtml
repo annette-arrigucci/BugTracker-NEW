@@ -94,7 +94,13 @@
 
     </dl>
 </div>
+
+@Html.Partial("_ShowComments", (IEnumerable<BugTracker.Models.TicketComment>)ViewBag.Comments)
+@Html.Partial("_ShowAttachments", (IEnumerable<BugTracker.Models.TicketAttachment>)ViewBag.Attachments)
+
 <p>
+    @Html.ActionLink("Add Comment", "Create", "TicketComments", new { ticketId = Model.Id }, new { @class = "btn btn-default" } )
+    @Html.ActionLink("Add Attachment", "Create", "TicketAttachments", new { ticketId = Model.Id }, new { @class = "btn btn-default" })
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
