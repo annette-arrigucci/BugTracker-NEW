@@ -19,13 +19,15 @@
             }
             <br />
             <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b>
-            if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
-            {
-                <p>
-                    @Html.ActionLink("Edit", "Edit", "TicketComments", new { id = item.Id }, null) |
+            <p>
+                @if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
+                {
+                    @Html.ActionLink("Edit", "Edit", "TicketComments", new { id = item.Id }, null)
+                    @Html.Raw(" | ")
                     @Html.ActionLink("Delete", "Delete", "TicketComments", new { id = item.Id }, null)
-                </p>
-            }
+                }
+            </p>
+            <br />
         }
     }
     else
