@@ -122,7 +122,9 @@
  
     <script>
         $(document).ready( function () {
-            $('#tickets-table').DataTable();
+            $('#tickets-table').DataTable( {
+                "order": [[ 1, 'desc' ]]
+            });
         });
     </script>
 }
