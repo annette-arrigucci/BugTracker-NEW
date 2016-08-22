@@ -97,7 +97,7 @@
                         @Html.Raw("<br>")
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id })
                     }
-                    @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                    @if (User.IsInRole("Project Manager"))
                     {
                         @Html.Raw("<br>")
                         @Html.ActionLink("Assign", "AssignUser", new { id = item.Id })

@@ -80,7 +80,7 @@
                 @*@Html.DisplayFor(model => model.AssignedToUserName)*@
                 <p class="not-editable">
                     @Model.AssignedToUserName
-                @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                @if (User.IsInRole("Project Manager"))
                 {
                     @Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
                     @Html.ActionLink("Edit", "AssignUser", new { id = Model.Id }, new { htmlAttributes = new { @class = "form-control" } })

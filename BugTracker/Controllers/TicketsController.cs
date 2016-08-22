@@ -190,7 +190,7 @@ namespace BugTracker.Controllers
 
 
         // GET: Tickets/AssignUser/5
-        [Authorize(Roles ="Admin, Project Manager")]
+        [Authorize(Roles ="Project Manager")]
         public ActionResult AssignUser(int? id)
         {
             if (id == null)
@@ -202,15 +202,11 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             Ticket ticket = db.Tickets.Find(id);
 
-            if (User.IsInRole("Project Manager"))
+            if (!helper.IsUserInProject(userId, ticket.ProjectId))
             {
-                if (!helper.IsUserInProject(userId, ticket.ProjectId))
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
+               return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            //otherwise assume that user is an admin
             var model = new TicketAssignViewModel();
             
             model.TicketDetails = new TicketDetailsViewModel(ticket);
@@ -316,7 +312,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        [Authorize]
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create()
         {
             var ticketView = new TicketCreateViewModel();
