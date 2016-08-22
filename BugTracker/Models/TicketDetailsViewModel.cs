@@ -83,6 +83,42 @@ namespace BugTracker.Models
             return user.FirstName + " " + user.LastName;
         }
 
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to TicketDetailsViewModel return false.
+            TicketDetailsViewModel p = obj as TicketDetailsViewModel;
+            if ((System.Object)p == null)
+            {
+                return false;
+            }
+
+            //Check whether the products' properties are equal. 
+            return Id.Equals(p.Id) && Title.Equals(p.Title);
+        }
+
+        public bool Equals(TicketDetailsViewModel p)
+        {
+            // If parameter is null return false
+            if ((object)p == null)
+            {
+                return false;
+            }
+
+            //Check whether the products' properties are equal. 
+            return Id.Equals(p.Id) && Title.Equals(p.Title);
+        }
+
+        public override int GetHashCode()
+        {
+            //Calculate the hash code for the product. 
+            return Id ^ Id;
+        }
 
     }
 }

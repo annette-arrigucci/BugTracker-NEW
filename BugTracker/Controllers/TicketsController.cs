@@ -35,7 +35,8 @@ namespace BugTracker.Controllers
                 return View(ticketDetailsList);
             }
             //otherwise, go through each role a user can be in and add the tickets that can be viewed in each
-            //this does allow duplicates - tried Union but need to work on equality operator
+            //The Union method is used to eliminate duplicate entries in which user both owns the ticket is 
+            //assigned the ticket or is PM for the ticket - the Equals method is overriden in the TicketDetailsViewModel
             else if (User.IsInRole("Project Manager"))
             {
                 var query = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
@@ -50,24 +51,27 @@ namespace BugTracker.Controllers
                     }
                 }             
                 var pmTicketDetailsList = transformTickets(ticketList);
-                ticketDetailsList.AddRange(pmTicketDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(pmTicketDetailsList).ToList();
             }
             if (User.IsInRole("Developer"))
             {
                 var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
                 var devDetailsList = transformTickets(tickets.ToList());
-                ticketDetailsList.AddRange(devDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(devDetailsList).ToList();
             }
             if (User.IsInRole("Submitter"))
             {
                 var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
                 var subDetailsList = transformTickets(tickets.ToList());
-                ticketDetailsList.AddRange(subDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(subDetailsList).ToList();
             }
+            //the order gets overriden when datatables.net script is applied
             ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
             return View(ticketDetailsList);
         }
 
+        //this calls a ticket directory view where all fields of tickets can be viewed on one page
+        //same code as Index view but displays differently in view
         [Authorize]
         public ActionResult All()
         {
@@ -83,7 +87,7 @@ namespace BugTracker.Controllers
                 return View(ticketDetailsList);
             }
             //otherwise, go through each role a user can be in and add the tickets that can be viewed in each
-            //this does allow duplicates - tried Union but need to work on equality operator
+            //duplicates eliminated with Union method
             else if (User.IsInRole("Project Manager"))
             {
                 var query = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
@@ -98,19 +102,19 @@ namespace BugTracker.Controllers
                     }
                 }
                 var pmTicketDetailsList = transformTickets(ticketList);
-                ticketDetailsList.AddRange(pmTicketDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(pmTicketDetailsList).ToList();
             }
             if (User.IsInRole("Developer"))
             {
                 var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
                 var devDetailsList = transformTickets(tickets.ToList());
-                ticketDetailsList.AddRange(devDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(devDetailsList).ToList();
             }
             if (User.IsInRole("Submitter"))
             {
                 var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
                 var subDetailsList = transformTickets(tickets.ToList());
-                ticketDetailsList.AddRange(subDetailsList);
+                ticketDetailsList = ticketDetailsList.Union(subDetailsList).ToList();
             }
             ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
             return View(ticketDetailsList);
