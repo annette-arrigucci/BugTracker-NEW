@@ -19,6 +19,10 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        enum Priorities { High = 1, Medium, Low, Critical };
+        enum Statuses { Waitingforsupport = 1, Waitingforcustomer, Resolved, Onhold, New };
+        enum Types {  Errorreport = 1, Featurerequest, Servicerequest, Other };
+
         // GET: Tickets
         [Authorize]
         public ActionResult Index()

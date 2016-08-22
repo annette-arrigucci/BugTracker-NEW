@@ -9,3 +9,8 @@ texarea {
 .not-editable {
     margin-top: 7px !important;
 }
+
+dd {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}

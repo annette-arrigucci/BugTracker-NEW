@@ -286,6 +286,10 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Uploads\basketball-1442709-1279x853.jpg" />
+    <Content Include="Uploads\book-1558780-1280x960.jpg" />
+    <Content Include="Uploads\bug_tracker.JPG" />
+    <Content Include="Uploads\IMG_1235.jpg" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -357,7 +361,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

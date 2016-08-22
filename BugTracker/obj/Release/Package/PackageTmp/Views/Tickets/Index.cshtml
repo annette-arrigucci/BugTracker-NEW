@@ -6,11 +6,14 @@
     ViewBag.Title = "Tickets";
 }*@
 
-<h2>Tickets</h2>
+<h2>Tickets Dashboard</h2>
 
+<br />
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<br />
+
 <table class="table" id="tickets-table">
     <thead>
         <tr>
@@ -23,9 +26,9 @@
             <th>
                 Created
             </th>
-            <th>
+            @*<th>
                 Updated
-            </th>
+            </th>*@
             <th>
                 Project
             </th>
@@ -52,7 +55,8 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @*@Html.DisplayFor(modelItem => item.Title)*@
+                    @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
                 </td>
                 @*<td>
                         @Html.DisplayFor(modelItem => item.Description)
@@ -63,14 +67,14 @@
                     @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt")*@
                     @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
                 </td>
-                <td>
+                @*<td>*@
                     @*@Html.DisplayFor(modelItem => item.Updated)*@
-                    @if (item.Updated != null)
+                    @*@if (item.Updated != null)
                     {
                         @TimeZoneInfo.ConvertTime((DateTimeOffset)item.Updated, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
-                        @*@item.Updated.ToLocalTime().ToString("M/d/yy h:mm tt")// this doesn't work with a nullable DateTimeOffset*@
-                    }
-                </td>
+                        @* @item.Updated.ToLocalTime().ToString("M/d/yy h:mm tt")// this doesn't work with a nullable DateTimeOffset*@
+                    @*}*@
+                @*</td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectTitle)
                 </td>
@@ -93,8 +97,13 @@
                     @Html.ActionLink("Details", "Details", new { id = item.Id })
                     @if (User.IsInRole("Developer") || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
                     {
-                        @Html.Raw(" | ")
+                        @Html.Raw("<br>")
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    }
+                    @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                    {
+                        @Html.Raw("<br>")
+                        @Html.ActionLink("Assign", "AssignUser", new { id = item.Id })
                     }
                     @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
                 </td>
@@ -103,13 +112,19 @@
     </tbody>
 </table>
 
+<br />
+    @Html.ActionLink("View full ticket directory", "All", "Tickets")
+<br />
+
 @section Scripts
 {
     <script type="text/javascript" src="~/DataTables/datatables.js"></script>
  
     <script>
         $(document).ready( function () {
-            $('#tickets-table').DataTable();
+            $('#tickets-table').DataTable( {
+                "order": [[ 1, 'desc' ]]
+            });
         });
     </script>
 }
