@@ -19,9 +19,9 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        enum Priorities { High = 1, Medium, Low, Critical };
-        enum Statuses { Waitingforsupport = 1, Waitingforcustomer, Resolved, Onhold, New };
-        enum Types {  Errorreport = 1, Featurerequest, Servicerequest, Other };
+        string[] Priorities = { "High", "Medium", "Low", "Critical" };
+        string[] Statuses = { "Waiting for support", "Waiting for customer", "Resolved", "On hold", "New" };
+        string[] Types = { "Error report", "Feature request", "Service request", "Other" };
 
         // GET: Tickets
         [Authorize]
@@ -343,12 +343,19 @@ namespace BugTracker.Controllers
                             select p.Id;
                 ticket.TicketStatusId = query.First();
                 ticket.OwnerUserId = User.Identity.GetUserId();
+
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
+
+                //update TicketHistories table
+                AddTicketHistoryCreate(ticket);
+
                 return RedirectToAction("Index");
             }
             return View(tvm);
         }
+
+       
 
         // GET: Tickets/Edit/5
         [Authorize( Roles = "Developer, Project Manager, Admin")]
@@ -434,6 +441,13 @@ namespace BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 Ticket ticket = db.Tickets.Find(tevModel.Id);
+
+                //check the differences between the original ticket and the edited ticket
+                //get the user Id of the editor of the ticket
+                //add the ticket history or histories to the database
+                var editor = User.Identity.GetUserId();
+                CheckTicketHistoryEdit(ticket, tevModel, editor);
+
                 ticket.Title = tevModel.Title;
                 ticket.Description = tevModel.Description;
                 ticket.Created = tevModel.Created;
@@ -495,5 +509,93 @@ namespace BugTracker.Controllers
             }
             return ticketDetailsList;
         }
+
+        //create a ticket history entry upon creation of a new ticket
+        public void AddTicketHistoryCreate(Ticket ticket)
+        {
+            var ticketHistory = new TicketHistory();
+            ticketHistory.TicketId = ticket.Id;
+            ticketHistory.PropertyChanged = "Created";
+            ticketHistory.ChangeDate = DateTimeOffset.Now;
+            var priority = Priorities[ticket.TicketPriorityId - 1];
+            var type = Types[ticket.TicketTypeId - 1];
+            var status = Statuses[ticket.TicketStatusId - 1];
+            var project = db.Projects.Find(ticket.ProjectId);
+            var pName = project.Name;
+
+            ticketHistory.NewValue = ticket.Created.ToString();
+            ticketHistory.Description = "Title: " + ticket.Title + "\n" + "Project: " + pName + "\n" + "Description: " + ticket.Description + "Priority: " + priority + "; Type: " + type + "; Status: " + status;
+            ticketHistory.UserId = ticket.OwnerUserId;
+
+            db.TicketHistories.Add(ticketHistory);
+            db.SaveChanges();
+        }
+
+        //create a ticket history entry editing of a ticket
+        public void CheckTicketHistoryEdit(Ticket ticket, TicketEditViewModel editedTicket, string userId)
+        {         
+            if (!ticket.Title.Equals(editedTicket.Title))
+            {
+                var old = ticket.Title;
+                var newVal = editedTicket.Title;
+                CreateTicketHistory(ticket.Id, userId, "Title", old, newVal);
+            }
+            if (!ticket.Description.Equals(editedTicket.Description))
+            {
+                var old = ticket.Description;
+                var newVal = editedTicket.Description;
+                CreateTicketHistory(ticket.Id, userId, "Description", old, newVal);
+            }
+            if (!ticket.TicketTypeId.Equals(editedTicket.SelectedType))
+            {
+                var old = Types[ticket.TicketTypeId - 1];
+                var newVal = Types[editedTicket.SelectedType - 1];
+                CreateTicketHistory(ticket.Id, userId, "Type", old, newVal);
+            }
+            if (!ticket.TicketPriorityId.Equals(editedTicket.SelectedPriority))
+            {
+                var old = Priorities[ticket.TicketPriorityId - 1];
+                var newVal = Priorities[editedTicket.SelectedPriority - 1];
+                CreateTicketHistory(ticket.Id, userId, "Priority", old, newVal);
+            }
+            if (!ticket.TicketStatusId.Equals(editedTicket.SelectedStatus))
+            {
+                var old = Statuses[ticket.TicketStatusId - 1];
+                var newVal = Statuses[editedTicket.SelectedStatus - 1];
+                CreateTicketHistory(ticket.Id, userId, "Status", old, newVal);
+            }
+        }
+        public void CreateTicketHistory(int ticketId, string userId, string property, string oldValue, string newValue)
+        {
+            var ticketHistory = new TicketHistory();
+            ticketHistory.TicketId = ticketId;
+            ticketHistory.UserId = userId;
+            ticketHistory.PropertyChanged = property;
+            ticketHistory.ChangeDate = DateTimeOffset.Now;
+            ticketHistory.OldValue = oldValue;
+            ticketHistory.NewValue = newValue;      
+            
+            if (property.Equals("Description"))
+            {
+                ticketHistory.Description = "Ticket description changed.\n New description: " + newValue + "\n" + "Old description: " + oldValue;
+            }
+            else if(property.Equals("Title") || property.Equals("Type") || property.Equals("Priority") || property.Equals("Status"))
+            {
+                ticketHistory.Description = property + " was changed from " + oldValue + " to " + newValue + ".";
+            }
+            else
+            {
+                
+            }
+            //var priority = Priorities[ticket.TicketPriorityId - 1];
+            //var type = Types[ticket.TicketTypeId - 1];
+            //var status = Statuses[ticket.TicketStatusId - 1];
+            //var project = db.Projects.Find(ticket.ProjectId);
+            //var pName = project.Name;
+
+            db.TicketHistories.Add(ticketHistory);
+            db.SaveChanges();
+        }
+
     }
 }
