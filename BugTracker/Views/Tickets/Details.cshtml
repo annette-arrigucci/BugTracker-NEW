@@ -87,7 +87,15 @@
             @Html.ActionLink("Add Attachment", "Create", "TicketAttachments", new { ticketId = Model.Id }, new { @class = "btn btn-default" })
         </dd>
         <dt></dt>
-        <dd><br />@Html.ActionLink("Edit Ticket", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })</dd>       
+        <dd>@Html.ActionLink("Ticket History", "History", new { id = Model.Id }, null)</dd>
+        <dt></dt>
+        <dd><br />
+        <!--Submitter can't edit tickets - if a Developer, PM or Admin is able to access this page they should be able to edit the ticket-->
+        @if (User.IsInRole("Developer") || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+        {
+            @Html.ActionLink("Edit Ticket", "Edit", new { id = Model.Id }, new { @class = "btn btn-default" })
+        }
+        </dd>       
     </dl>
     @Html.ActionLink("Back to Ticket List", "Index")
     

@@ -188,6 +188,65 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
+        [Authorize]
+        public ActionResult History(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Ticket ticket = db.Tickets.Find(id);
+            if (ticket == null)
+            {
+                return HttpNotFound();
+            }
+
+            var userId = User.Identity.GetUserId();
+            var helper = new ProjectUserHelper();
+
+            //if user is not an admin, who is able to view all tickets, check if they are a project manager, developer or submitter 
+            //and allowed to view the ticket. If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin"))
+            {
+                //for PM, verify it is in one of their assigned projects
+                if (User.IsInRole("Project Manager"))
+                {
+                    if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for developer - verify that they have been assigned this ticket
+                else if (User.IsInRole("Developer"))
+                {
+                    //if the ticket is unassigned, return a bad request
+                    if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    else if (!ticket.AssignedToUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //for submitter - verify that they created this ticket
+                else if (User.IsInRole("Submitter"))
+                {
+                    if (!ticket.OwnerUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }           
+            ViewBag.ticketTitle = ticket.Title;
+            var model = ticket.TicketHistories.OrderByDescending(x => x.ChangeDate);
+            return View(model);
+        }
 
         // GET: Tickets/AssignUser/5
         [Authorize(Roles ="Project Manager")]
@@ -256,14 +315,38 @@ namespace BugTracker.Controllers
                 //otherwise, 
                 //- update the ticket
                 //- create an entry in ticket notification table
+                //- create entry in ticket history table
                 //- send an email to the developer who has been assigned the ticket
                 //- if status is New, change to "Waiting for Support"
+
                 else
-                { 
+                {
+                    //get userId and name of assigner
+                    var assignerId = User.Identity.GetUserId();
+
+                    //get name of SelectedUser
+                    var selected = db.Users.Find(SelectedUser);
+                    var selectedName = selected.FirstName + " " + selected.LastName;
+
+                    //create the ticket history entry
+                    //if this is the first assignment of the ticket, the "Assigned To" field will be null
+                    if (ticket.AssignedToUserId == null)
+                    {
+                        CreateTicketHistory(tId, assignerId, "Assigned To", "None", selectedName);
+                    }
+                    //otherwise create a ticket for the change of assignment
+                    else
+                    {
+                        //get the name of the user who was previously assigned to the ticket
+                        var oldAssigned = db.Users.Find(ticket.AssignedToUserId);
+                        var oldAssignedName = oldAssigned.FirstName + " " + oldAssigned.LastName;
+                        CreateTicketHistory(tId, assignerId, "Assigned To", oldAssignedName, selectedName);
+                    }
+
                     ticket.AssignedToUserId = SelectedUser;
                     var tn = new TicketNotification { TicketId = tId, UserId = SelectedUser };
-                    db.TicketNotifications.Add(tn);
-              
+                    db.TicketNotifications.Add(tn);                
+
                     UpdateTicketStatusIfNew(tId);
 
                     db.Entry(ticket).State = EntityState.Modified;
@@ -299,10 +382,12 @@ namespace BugTracker.Controllers
         {
             var ticket = db.Tickets.Find(tId);
             var status = db.TicketStatuses.Find(ticket.TicketStatusId);
+         
             if(status.Name == "New")
             {
                 var newStatus = db.TicketStatuses.FirstOrDefault(x => x.Name == "Waiting for support");
                 ticket.TicketStatusId = newStatus.Id;
+                CreateTicketHistory(tId, "System", "Status", "New", "Waiting for support");
             }
         }
 
@@ -531,7 +616,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
         }
 
-        //create a ticket history entry editing of a ticket
+        //create a ticket history entry with editing of a ticket
         public void CheckTicketHistoryEdit(Ticket ticket, TicketEditViewModel editedTicket, string userId)
         {         
             if (!ticket.Title.Equals(editedTicket.Title))
@@ -565,6 +650,7 @@ namespace BugTracker.Controllers
                 CreateTicketHistory(ticket.Id, userId, "Status", old, newVal);
             }
         }
+
         public void CreateTicketHistory(int ticketId, string userId, string property, string oldValue, string newValue)
         {
             var ticketHistory = new TicketHistory();
@@ -583,19 +669,22 @@ namespace BugTracker.Controllers
             {
                 ticketHistory.Description = property + " was changed from " + oldValue + " to " + newValue + ".";
             }
-            else
+            else if(property.Equals("Assigned To"))
             {
-                
+                if (oldValue.Equals("None"))
+                {
+                    ticketHistory.Description = "Ticket assigned to " + newValue + "."; 
+                }
+                else
+                {
+                    ticketHistory.Description = "Ticket assignment changed from " + oldValue + " to " + newValue + ".";
+                }
             }
-            //var priority = Priorities[ticket.TicketPriorityId - 1];
-            //var type = Types[ticket.TicketTypeId - 1];
-            //var status = Statuses[ticket.TicketStatusId - 1];
-            //var project = db.Projects.Find(ticket.ProjectId);
-            //var pName = project.Name;
-
             db.TicketHistories.Add(ticketHistory);
             db.SaveChanges();
         }
+
+
 
     }
 }

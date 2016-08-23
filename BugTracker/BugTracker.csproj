@@ -358,6 +358,7 @@
     <Content Include="Views\TicketAttachments\Edit.cshtml" />
     <Content Include="Views\TicketAttachments\Index.cshtml" />
     <Content Include="Views\Shared\_ShowAttachments.cshtml" />
+    <Content Include="Views\Tickets\History.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
