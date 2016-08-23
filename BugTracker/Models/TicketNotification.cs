@@ -42,16 +42,19 @@ namespace BugTracker.Models
             switch (NotificationType)
             {
                 case "Assign":      subject = "Ticket assigned - " + ticket.Title;
-                                    body = "You have been assigned a new ticket. Click <a href=\"" + callbackUrl + "\">here</a> to view ticket details.";
+                                    body = "You have been assigned a new ticket in the Bug Tracker. Click <a href=\"" + callbackUrl + "\">here</a> to view ticket details.";
                                     break;
                 case "Reassign":    subject = "Ticket reassigned - " + ticket.Title;
-                                    body = "The ticket \""+ ticket.Title + "\" has been reassigned. View your updated tickets list <a href=\"http://aarrigucci-bugtracker.azurewebsites.net/Tickets\">here</a>.";
+                                    body = "The ticket \""+ ticket.Title + "\" has been reassigned in the Bug Tracker. View your updated tickets list <a href=\"http://aarrigucci-bugtracker.azurewebsites.net/Tickets\">here</a>.";
                                     break;
                 case "Edited":      subject = "Ticket edited - " + ticket.Title;
-                                    body = "The ticket \"" + ticket.Title + "\" was edited. Click <a href=\"" + callbackUrl + "\">here</a> to view the updated ticket details.";
+                                    body = "The ticket \"" + ticket.Title + "\" was edited in the Bug Tracker. Click <a href=\"" + callbackUrl + "\">here</a> to view the updated ticket details.";
                                     break;
                 case "Attachment":  subject = "Attachment added - " + ticket.Title;
-                                    body = "An attachment was add to the ticket \"" + ticket.Title + ".\" Click <a href=\"" + callbackUrl + "\">here</a> to view the attachment and other ticket details.";
+                                    body = "An attachment was add to the ticket \"" + ticket.Title + "\" in the Bug Tracker. Click <a href=\"" + callbackUrl + "\">here</a> to view the attachment and other ticket details.";
+                                    break;
+                case "Comment":     subject = "Comment added - " + ticket.Title;
+                                    body = "A comment was add to the ticket \"" + ticket.Title + "\" in the Bug Tracker. Click <a href=\"" + callbackUrl + "\">here</a> to view the comment and other ticket details.";
                                     break;
             }
             es.SendAsync(new IdentityMessage
@@ -60,11 +63,6 @@ namespace BugTracker.Models
                 Subject = subject,
                 Body = body
             });
-            //case: assign
-            //case: reassign
-            //case: edit
-            //case: comment
-            //case: attachement
         }
     }
 }

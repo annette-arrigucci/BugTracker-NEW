@@ -106,8 +106,20 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = User.Identity.GetUserId();
                 ticketComment.Created = DateTimeOffset.Now;
-                ticketComment.UserId = User.Identity.GetUserId();
+                ticketComment.UserId = user;
+                var ticket = db.Tickets.Find(ticketComment.TicketId);
+
+                //if user adding the comment is not the developer assigned to the ticket, 
+                //create a ticket notification and send an email to the developer
+                if (!user.Equals(ticket.AssignedToUserId))
+                {
+                    var commentNotification = new TicketNotification(ticket.Id, ticket.AssignedToUserId, "Comment");
+                    commentNotification.AddTicketNotification();
+                    commentNotification.SendNotificationEmail();
+                }
+
                 db.TicketComments.Add(ticketComment);
                 db.SaveChanges();
                 return RedirectToAction("Details","Tickets", new { id = ticketComment.TicketId });
