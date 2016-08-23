@@ -244,6 +244,7 @@ namespace BugTracker.Controllers
                 }
             }           
             ViewBag.ticketTitle = ticket.Title;
+            ViewBag.ticketId = ticket.Id;
             var model = ticket.TicketHistories.OrderByDescending(x => x.ChangeDate);
             return View(model);
         }
@@ -609,7 +610,7 @@ namespace BugTracker.Controllers
             var pName = project.Name;
 
             ticketHistory.NewValue = ticket.Created.ToString();
-            ticketHistory.Description = "Title: " + ticket.Title + "\n" + "Project: " + pName + "\n" + "Description: " + ticket.Description + "Priority: " + priority + "; Type: " + type + "; Status: " + status;
+            ticketHistory.Description = "Title: " + ticket.Title + "<br>" + "Project: " + pName + "<br>" + "Description: " + ticket.Description + "<br>Priority: " + priority + "; Type: " + type + "; Status: " + status;
             ticketHistory.UserId = ticket.OwnerUserId;
 
             db.TicketHistories.Add(ticketHistory);
@@ -663,11 +664,11 @@ namespace BugTracker.Controllers
             
             if (property.Equals("Description"))
             {
-                ticketHistory.Description = "Ticket description changed.\n New description: " + newValue + "\n" + "Old description: " + oldValue;
+                ticketHistory.Description = "Ticket description changed.<br>New description:<br>" + newValue + "<br>" + "Old description:<br>" + oldValue;
             }
             else if(property.Equals("Title") || property.Equals("Type") || property.Equals("Priority") || property.Equals("Status"))
             {
-                ticketHistory.Description = property + " was changed from " + oldValue + " to " + newValue + ".";
+                ticketHistory.Description = property + " changed from \"" + oldValue + "\" to \"" + newValue + ".\"";
             }
             else if(property.Equals("Assigned To"))
             {
