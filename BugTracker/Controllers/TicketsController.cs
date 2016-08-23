@@ -334,6 +334,10 @@ namespace BugTracker.Controllers
                     if (ticket.AssignedToUserId == null)
                     {
                         CreateTicketHistory(tId, assignerId, "Assigned To", "None", selectedName);
+                        //create a new Ticket Notification object
+                        var tn = new TicketNotification(tId, SelectedUser, "Assign");
+                        tn.AddTicketNotification();
+                        tn.SendNotificationEmail();
                     }
                     //otherwise create a ticket for the change of assignment
                     else
@@ -342,19 +346,24 @@ namespace BugTracker.Controllers
                         var oldAssigned = db.Users.Find(ticket.AssignedToUserId);
                         var oldAssignedName = oldAssigned.FirstName + " " + oldAssigned.LastName;
                         CreateTicketHistory(tId, assignerId, "Assigned To", oldAssignedName, selectedName);
+                        
+                        //notify the old developer that the ticket has been reassigned
+                        var trn1 = new TicketNotification(tId, ticket.AssignedToUserId, "Reassign");
+                        trn1.AddTicketNotification();
+                        trn1.SendNotificationEmail();
+
+                        //notify the new developer they have been assigned to the ticket
+                        var trn2 = new TicketNotification(tId, SelectedUser, "Assign");
+                        trn2.AddTicketNotification();
+                        trn2.SendNotificationEmail();
                     }
 
-                    ticket.AssignedToUserId = SelectedUser;
-                    var tn = new TicketNotification { TicketId = tId, UserId = SelectedUser };
-                    db.TicketNotifications.Add(tn);                
+                    ticket.AssignedToUserId = SelectedUser;                
 
                     UpdateTicketStatusIfNew(tId);
 
                     db.Entry(ticket).State = EntityState.Modified;
                     db.SaveChanges();
-
-                    var ticketTitle = ticket.Title;
-                    SendNotificationEmail(SelectedUser, ticketTitle);
 
                     return RedirectToAction("ConfirmAssignment");
                 } 
@@ -364,20 +373,7 @@ namespace BugTracker.Controllers
                 return RedirectToAction("AssignUser", new { id = tId });
             }
         }
-        
-        //Email a user that he/she has been assigned a ticket
-        public async Task SendNotificationEmail(string userId, string ticketTitle)
-        {
-            var callbackUrl = "http://aarrigucci-bugtracker.azurewebsites.net/tickets";           
-            ApplicationUser user = db.Users.Find(userId);
-            var es = new EmailService();
-            es.SendAsync(new IdentityMessage
-            {
-                Destination = user.Email,
-                Subject = "New Ticket - " + ticketTitle,
-                Body = "You have been assigned a new ticket. Click <a href=\"" + callbackUrl + "\">here</a> to view ticket details."
-            });
-        }
+       
 
         public void UpdateTicketStatusIfNew(int tId)
         {
@@ -532,8 +528,15 @@ namespace BugTracker.Controllers
                 //get the user Id of the editor of the ticket
                 //add the ticket history or histories to the database
                 var editor = User.Identity.GetUserId();
-                CheckTicketHistoryEdit(ticket, tevModel, editor);
-
+                var wasEdited = CheckTicketHistoryEdit(ticket, tevModel, editor);
+                //if the editor of the ticket is not the developer assigned to the ticket, and there were
+                //changes to the ticket, notify the developer of the changes
+                if(!editor.Equals(ticket.AssignedToUserId) && wasEdited == true)
+                {
+                    var teNotification = new TicketNotification(ticket.Id, ticket.AssignedToUserId, "Edited");
+                    teNotification.AddTicketNotification();
+                    teNotification.SendNotificationEmail();
+                }
                 ticket.Title = tevModel.Title;
                 ticket.Description = tevModel.Description;
                 ticket.Created = tevModel.Created;
@@ -618,38 +621,46 @@ namespace BugTracker.Controllers
         }
 
         //create a ticket history entry with editing of a ticket
-        public void CheckTicketHistoryEdit(Ticket ticket, TicketEditViewModel editedTicket, string userId)
-        {         
+        //if ticket had any edits, return true
+        public bool CheckTicketHistoryEdit(Ticket ticket, TicketEditViewModel editedTicket, string userId)
+        {
+            bool wasEdited = false;
             if (!ticket.Title.Equals(editedTicket.Title))
             {
                 var old = ticket.Title;
                 var newVal = editedTicket.Title;
                 CreateTicketHistory(ticket.Id, userId, "Title", old, newVal);
+                wasEdited = true;
             }
             if (!ticket.Description.Equals(editedTicket.Description))
             {
                 var old = ticket.Description;
                 var newVal = editedTicket.Description;
                 CreateTicketHistory(ticket.Id, userId, "Description", old, newVal);
+                wasEdited = true;
             }
             if (!ticket.TicketTypeId.Equals(editedTicket.SelectedType))
             {
                 var old = Types[ticket.TicketTypeId - 1];
                 var newVal = Types[editedTicket.SelectedType - 1];
                 CreateTicketHistory(ticket.Id, userId, "Type", old, newVal);
+                wasEdited = true;
             }
             if (!ticket.TicketPriorityId.Equals(editedTicket.SelectedPriority))
             {
                 var old = Priorities[ticket.TicketPriorityId - 1];
                 var newVal = Priorities[editedTicket.SelectedPriority - 1];
                 CreateTicketHistory(ticket.Id, userId, "Priority", old, newVal);
+                wasEdited = true;
             }
             if (!ticket.TicketStatusId.Equals(editedTicket.SelectedStatus))
             {
                 var old = Statuses[ticket.TicketStatusId - 1];
                 var newVal = Statuses[editedTicket.SelectedStatus - 1];
                 CreateTicketHistory(ticket.Id, userId, "Status", old, newVal);
+                wasEdited = true;
             }
+            return wasEdited;
         }
 
         public void CreateTicketHistory(int ticketId, string userId, string property, string oldValue, string newValue)
