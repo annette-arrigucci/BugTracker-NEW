@@ -111,9 +111,11 @@ namespace BugTracker.Controllers
             }
             if (ModelState.IsValid)
             {
+                var user = User.Identity.GetUserId();
                 ticketAttachment.FileName = document.FileName;
                 ticketAttachment.Created = DateTimeOffset.Now;
-                ticketAttachment.UserId = User.Identity.GetUserId();
+                ticketAttachment.UserId = user;
+                var ticket = db.Tickets.Find(ticketAttachment.TicketId);
 
                 if (document != null)
                 {
@@ -123,6 +125,16 @@ namespace BugTracker.Controllers
                     document.SaveAs(Path.Combine(absPath, document.FileName)); //save image
                 }
 
+                //if user adding the attachment is not the developer assigned to the ticket, 
+                //create a ticket notification and send an email to the developer
+                if (!user.Equals(ticket.AssignedToUserId))
+                {
+                    var attachNotification = new TicketNotification(ticket.Id, ticket.AssignedToUserId, "Attachment");
+                    attachNotification.AddTicketNotification();
+                    attachNotification.SendNotificationEmail();
+                }
+
+                //add the attachment
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
                 return RedirectToAction("Details", "Tickets", new { id = ticketAttachment.TicketId });

@@ -315,8 +315,8 @@ namespace BugTracker.Controllers
                 }
                 //otherwise, 
                 //- update the ticket
-                //- create an entry in ticket notification table
                 //- create entry in ticket history table
+                //- create an entry in ticket notification table
                 //- send an email to the developer who has been assigned the ticket
                 //- if status is New, change to "Waiting for Support"
 
@@ -531,7 +531,7 @@ namespace BugTracker.Controllers
                 var wasEdited = CheckTicketHistoryEdit(ticket, tevModel, editor);
 
                 //if the editor of the ticket is not the developer assigned to the ticket, and there were
-                //changes to the ticket, notify the developer of the changes
+                //changes to the ticket, create a ticket notification and send an email to the developer
                 if(!editor.Equals(ticket.AssignedToUserId) && wasEdited == true)
                 {
                     var teNotification = new TicketNotification(ticket.Id, ticket.AssignedToUserId, "Edited");

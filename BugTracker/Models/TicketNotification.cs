@@ -50,6 +50,9 @@ namespace BugTracker.Models
                 case "Edited":      subject = "Ticket edited - " + ticket.Title;
                                     body = "The ticket \"" + ticket.Title + "\" was edited. Click <a href=\"" + callbackUrl + "\">here</a> to view the updated ticket details.";
                                     break;
+                case "Attachment":  subject = "Attachment added - " + ticket.Title;
+                                    body = "An attachment was add to the ticket \"" + ticket.Title + ".\" Click <a href=\"" + callbackUrl + "\">here</a> to view the attachment and other ticket details.";
+                                    break;
             }
             es.SendAsync(new IdentityMessage
             {
