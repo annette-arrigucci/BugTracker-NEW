@@ -529,6 +529,7 @@ namespace BugTracker.Controllers
                 //add the ticket history or histories to the database
                 var editor = User.Identity.GetUserId();
                 var wasEdited = CheckTicketHistoryEdit(ticket, tevModel, editor);
+
                 //if the editor of the ticket is not the developer assigned to the ticket, and there were
                 //changes to the ticket, notify the developer of the changes
                 if(!editor.Equals(ticket.AssignedToUserId) && wasEdited == true)
