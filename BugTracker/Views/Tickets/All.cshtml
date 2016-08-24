@@ -29,13 +29,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.ProjectTitle)
             </th>
-            <th>
+            <th class="select-filter">
                 @Html.DisplayNameFor(model => model.TicketType)
             </th>
-            <th>
+            <th class="select-filter">
                 @Html.DisplayNameFor(model => model.TicketPriority)
             </th>
-            <th>
+            <th class="select-filter">
                 @Html.DisplayNameFor(model => model.TicketStatus)
             </th>
             <th>
@@ -105,17 +105,71 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <th>
+               
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>*@
+            <th>
+               
+            </th>
+            <th>
+               
+            </th>
+            <th>
+               
+            </th>
+            <th>
+               
+            </th>
+            <th>
+                
+            </th>
+            <th>
+                
+            </th>
+            <th>
+                
+            </th>
+            <th>
+                
+            </th>
+            <th></th>
+        </tr>
+    </tfoot>
 </table>
 
 @section Scripts
 {
     <script type="text/javascript" src="~/DataTables/datatables.js"></script>
     <script>
-        $(document).ready( function () {
-            $('#all-tickets').DataTable(
-                {
-                    "order": [[ 1, 'desc' ]]
-                });
+        $(document).ready(function () {
+            $('#all-tickets').DataTable({
+                "order": [[1, 'desc']],
+                initComplete: function () {
+                    this.api().columns('.select-filter').every(function () {
+                        var column = this;
+                        var select = $('<select><option value="">-Select-</option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
         });
-    </script>
+</script>
 }
