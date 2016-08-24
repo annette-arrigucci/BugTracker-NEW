@@ -5,6 +5,8 @@
     ViewBag.Title = "Details";
 }
 
+<link rel="stylesheet" href="~/DataTables/datatables.min.css" />
+
 <h2>Project Details</h2>
 
 <div>
@@ -37,9 +39,32 @@
         var myHelper = new ProjectUserHelper();
         var userList = myHelper.UsersInProject(Model.Id);
         var userInfoList = myHelper.getUserInfo(userList);
+        var projectTicketList = myHelper.getTicketsinProject(Model.Id);
+        
     }
     @Html.Partial("_ShowProjectUsers", userInfoList, new ViewDataDictionary { { "projectId", Model.Id } })
+    
+    @*only PM or Admin can see the list of tickets and their assignments*@
+    
+    @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+    {
+        <br /><br />
+        @Html.Partial("_ShowProjectTickets", projectTicketList, new ViewDataDictionary { { "projectId", Model.Id } })
+    }
     <br /><br />
+
 <p>
     @Html.ActionLink("Back to Projects List", "Index")
 </p>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/DataTables/datatables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#project-tickets-table').DataTable({
+                "order": [[1, 'desc']],
+            });
+        });
+    </script>
+}

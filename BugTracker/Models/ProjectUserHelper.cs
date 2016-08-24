@@ -176,5 +176,11 @@ namespace BugTracker.Models
             }
             return userInfoList;
         }
+
+        public List<Ticket> getTicketsinProject(int pId)
+        {
+            var ticketList = db.Tickets.Where(y => y.ProjectId == pId).OrderByDescending(y => y.Created);
+            return ticketList.ToList();
+        }
     }
 }
