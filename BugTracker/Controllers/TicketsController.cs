@@ -440,7 +440,7 @@ namespace BugTracker.Controllers
        
 
         // GET: Tickets/Edit/5
-        [Authorize( Roles = "Developer, Project Manager, Admin")]
+        [Authorize( Roles = "Submitter, Developer, Project Manager, Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -457,23 +457,39 @@ namespace BugTracker.Controllers
                 return HttpNotFound();
             }
 
-            //verify that the user can edit this ticket - it is a ticket in one of their assigned projects
-            if(User.IsInRole("Project Manager"))
+            if (!User.IsInRole("Admin"))
             {
-                if(!helper.IsUserInProject(userId, ticket.ProjectId))
+                //for PM, verify it is in one of their assigned projects
+                if (User.IsInRole("Project Manager"))
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    if (!helper.IsUserInProject(userId, ticket.ProjectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
                 }
-            }
-            //same for developer - verify that they have been assigned this ticket and can edit it
-            else if (User.IsInRole("Developer"))
-            {
-                //if string is not assigned, return a bad request
-                if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                //for developer - verify that they have been assigned this ticket
+                else if (User.IsInRole("Developer"))
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    //if the ticket is unassigned, return a bad request
+                    if (string.IsNullOrEmpty(ticket.AssignedToUserId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                    else if (!ticket.AssignedToUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
                 }
-                else if (!ticket.AssignedToUserId.Equals(userId))
+                //for submitter - verify that they created this ticket
+                else if (User.IsInRole("Submitter"))
+                {
+                    if (!ticket.OwnerUserId.Equals(userId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
+                else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }

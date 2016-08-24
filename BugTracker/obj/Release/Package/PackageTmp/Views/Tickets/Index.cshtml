@@ -10,7 +10,10 @@
 
 <br />
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (User.IsInRole("Submitter"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
 </p>
 <br />
 
@@ -95,12 +98,10 @@
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", new { id = item.Id })
-                    @if (User.IsInRole("Developer") || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
-                    {
-                        @Html.Raw("<br>")
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-                    }
-                    @if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                    @Html.Raw("<br>")
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    
+                    @if (User.IsInRole("Project Manager"))
                     {
                         @Html.Raw("<br>")
                         @Html.ActionLink("Assign", "AssignUser", new { id = item.Id })
