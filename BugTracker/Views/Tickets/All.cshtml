@@ -123,13 +123,13 @@
                
             </th>
             <th>
-               
+                Type
             </th>
             <th>
-                
+                Priority
             </th>
             <th>
-                
+                Status
             </th>
             <th>
                 
@@ -153,7 +153,8 @@
                     this.api().columns('.select-filter').every(function () {
                         var column = this;
                         var select = $('<select><option value="">-Select-</option></select>')
-                            .appendTo($(column.footer()).empty())
+                            //.appendTo($(column.footer()).empty())
+                            .appendTo($(column.footer()))
                             .on('change', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                     $(this).val()
