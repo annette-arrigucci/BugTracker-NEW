@@ -26,7 +26,7 @@ namespace BugTracker.Controllers
         string[] Types = { "Error report", "Feature request", "Service request", "Other" };
 
         // GET: Tickets
-        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
+        [Authorize]
         public ActionResult Index()
         {
             var id = User.Identity.GetUserId();
@@ -78,7 +78,7 @@ namespace BugTracker.Controllers
 
         //this calls a ticket directory view where all fields of tickets can be viewed on one page
         //same code as Index view but displays differently in view
-        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
+        [Authorize]
         public ActionResult All()
         {
             var id = User.Identity.GetUserId();

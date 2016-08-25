@@ -1,4 +1,5 @@
 ﻿using BugTracker.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,29 +21,39 @@ namespace BugTracker.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var projectModel = new ProjectUserViewModel();
             Project project = db.Projects.Find(projectId);
             var helper = new ProjectUserHelper();
-            // make sure project exists
-            if(project != null)
-            {
-                projectModel.ProjectId = project.Id;
-                projectModel.ProjectName = project.Name;
-                //get the user Ids that are associated with the project
-                var userIdList = helper.UsersInProject((int) projectId);
-                var userInfoList = helper.getUserInfo(userIdList);
-                projectModel.UsersAssignedtoProject = new MultiSelectList(userInfoList, "UserId", "UserName");
 
-                //get the user Ids not associated with the project
-                var nonUserIdList = helper.UsersNotInProject((int) projectId);
-                var nonUserInfoList = helper.getUserInfo(nonUserIdList);
-                projectModel.UsersNotAssignedToProject = new MultiSelectList(nonUserInfoList, "UserId", "UserName");
-                return View(projectModel);
-            }
-            else
+            if (project == null)
             {
                 return HttpNotFound();
             }
+            else
+            {
+                //if the user is not an admin, check that this is one of the PM's assigned projects
+                if (!User.IsInRole("Admin"))
+                {                 
+                    var userId = User.Identity.GetUserId();
+                    if (!helper.IsUserInProject(userId, (int)projectId))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
+                }
+            }
+            var projectModel = new ProjectUserViewModel();
+            // make sure project exists
+            projectModel.ProjectId = project.Id;
+            projectModel.ProjectName = project.Name;
+            //get the user Ids that are associated with the project
+            var userIdList = helper.UsersInProject((int) projectId);
+            var userInfoList = helper.getUserInfo(userIdList);
+            projectModel.UsersAssignedtoProject = new MultiSelectList(userInfoList, "UserId", "UserName");
+
+            //get the user Ids not associated with the project
+            var nonUserIdList = helper.UsersNotInProject((int) projectId);
+            var nonUserInfoList = helper.getUserInfo(nonUserIdList);
+            projectModel.UsersNotAssignedToProject = new MultiSelectList(nonUserInfoList, "UserId", "UserName");
+            return View(projectModel);
         }
 
         [HttpPost]

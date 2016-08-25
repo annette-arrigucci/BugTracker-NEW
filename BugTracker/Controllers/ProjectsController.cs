@@ -25,6 +25,7 @@ namespace BugTracker.Controllers
             if (User.IsInRole("Admin"))
             {
                 var myList = db.Projects.Where(x => x.IsActive == true).ToList();
+                //reverse the list so most recent projects on top of list
                 return View(quickReverse(myList));
             }
             else
@@ -105,13 +106,16 @@ namespace BugTracker.Controllers
             }
             else
             {
-                //check that this is one of the PM's assigned projects
-                var helper = new ProjectUserHelper();
-                var userId = User.Identity.GetUserId();
-
-                if (!helper.IsUserInProject(userId, (int)id))
+                //if the user is not an admin, check that this is one of the PM's assigned projects
+                if (!User.IsInRole("Admin"))
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    var helper = new ProjectUserHelper();
+                    var userId = User.Identity.GetUserId();
+
+                    if (!helper.IsUserInProject(userId, (int)id))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
                 }
             }
             return View(project);
@@ -175,7 +179,7 @@ namespace BugTracker.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "Admin, Project Manager, Developer, Submitter")]
+        [Authorize]
         public ActionResult ArchivedProjects()
         {
             
