@@ -14,6 +14,7 @@ namespace BugTracker.Models
         [Required]
         [StringLength(200, ErrorMessage = "Description must be less than 200 characters")]
         public string Description { get; set; }
+        public bool IsActive { get; set; }
 
         public Project()
         {

@@ -19,18 +19,19 @@ namespace BugTracker.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            //intention here is to perform an join on the Projects table with the ProjectUsers lookup table
+            //perform a join on the Projects table with the ProjectUsers lookup table
             //to retrieve all the projects a user is associated with
             var id = User.Identity.GetUserId();
             if (User.IsInRole("Admin"))
             {
-                var myList = db.Projects.ToList();
+                var myList = db.Projects.Where(x => x.IsActive == true).ToList();
                 return View(quickReverse(db.Projects.ToList()));
             }
             else
             {
                 var projects = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
-                return View(quickReverse(projects.ToList()));
+                var activeProjects = projects.Where(x => x.IsActive == true).ToList();
+                return View(quickReverse(activeProjects.ToList()));
             }
         }
 
@@ -72,6 +73,7 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                project.IsActive = true;
                 db.Projects.Add(project);
                 db.SaveChanges();
 
@@ -101,6 +103,17 @@ namespace BugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            else
+            {
+                //check that this is one of the PM's assigned projects
+                var helper = new ProjectUserHelper();
+                var userId = User.Identity.GetUserId();
+
+                if (!helper.IsUserInProject(userId, (int)id))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
             return View(project);
         }
 
@@ -120,31 +133,62 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-        // GET: Projects/Delete/5
+        // GET: Projects/Archive/5
         [Authorize(Roles = "Admin, Project Manager")]
-        public ActionResult Delete(int? id)
+        public ActionResult Archive(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            }           
             Project project = db.Projects.Find(id);
             if (project == null)
             {
                 return HttpNotFound();
             }
+            else
+            {
+                //check that this is one of the PM's assigned projects
+                var helper = new ProjectUserHelper();
+                var userId = User.Identity.GetUserId();
+
+                if (!helper.IsUserInProject(userId, (int)id))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+            }
             return View(project);
         }
 
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Projects/Archive/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult ArchiveConfirmed(int id)
         {
             Project project = db.Projects.Find(id);
-            db.Projects.Remove(project);
+            project.IsActive = false;
+            db.Entry(project).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public ActionResult ArchivedProjects()
+        {
+            //perform a join on the Projects table with the ProjectUsers lookup table
+            //to retrieve all the projects a user is associated with
+            var id = User.Identity.GetUserId();
+            if (User.IsInRole("Admin"))
+            {
+                var myList = db.Projects.Where(x => x.IsActive == false).ToList();
+                return View(quickReverse(db.Projects.ToList()));
+            }
+            else
+            {
+                var projects = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
+                var activeProjects = projects.Where(x => x.IsActive == false).ToList();
+                return View(quickReverse(activeProjects.ToList()));
+            }
         }
 
         protected override void Dispose(bool disposing)

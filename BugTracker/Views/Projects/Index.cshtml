@@ -39,6 +39,8 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id })
                 @Html.Raw(" | ")
                 @Html.ActionLink("Assign Users", "Edit", "ProjectUserView", new { projectId = item.Id }, new { })
+                @Html.Raw(" | ")
+                @Html.ActionLink("Archive", "Archive", new { id = item.Id }, new { })
             }
             @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
         </td>

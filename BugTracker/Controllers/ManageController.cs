@@ -66,23 +66,25 @@ namespace BugTracker.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
-            //could retrieve name based on UserID
+            var helper = new UserRolesHelper();
+            
             var user = UserManager.FindById(userId);
             var fname = user.FirstName;
             var lname = user.LastName;
             var usermail = user.Email;
+            var userRoles = helper.ListUserRoles(userId);
 
             var model = new IndexViewModel
             {
                 FirstName = fname,
                 LastName = lname,
                 Email = usermail,
-                HasPassword = HasPassword()/*,*/
+                HasPassword = HasPassword(),
+                CurrentRoles = userRoles/*,*/
                 //PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 //TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 //Logins = await UserManager.GetLoginsAsync(userId),
                 //BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-                //could send the names in this model - need to change the model
             };
             return View(model);
         }

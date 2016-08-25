@@ -330,7 +330,7 @@
     <Content Include="Views\Account\ConfirmationSent.cshtml" />
     <Content Include="Views\Manage\EditSettings.cshtml" />
     <Content Include="Views\Projects\Create.cshtml" />
-    <Content Include="Views\Projects\Delete.cshtml" />
+    <Content Include="Views\Projects\Archive.cshtml" />
     <Content Include="Views\Projects\Details.cshtml" />
     <Content Include="Views\Projects\Edit.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
@@ -360,6 +360,7 @@
     <Content Include="Views\Shared\_ShowAttachments.cshtml" />
     <Content Include="Views\Tickets\History.cshtml" />
     <Content Include="Views\Shared\_ShowProjectTickets.cshtml" />
+    <Content Include="Views\Projects\ArchivedProjects.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
