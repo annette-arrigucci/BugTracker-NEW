@@ -15,28 +15,31 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        //not using many of the scaffolded functions in this version of BugTracker
+        //commenting out the code instead of deleting it in case I need to add features later
+
         // GET: TicketComments
-        [Authorize(Roles ="Admin")]
-        public ActionResult Index()
-        {
-            return View(db.TicketComments.ToList());
-        }
+        //[Authorize(Roles ="Admin")]
+        //public ActionResult Index()
+        //{
+        //    return View(db.TicketComments.ToList());
+        //}
 
         // GET: TicketComments/Details/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketComment ticketComment = db.TicketComments.Find(id);
-            if (ticketComment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketComment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketComment ticketComment = db.TicketComments.Find(id);
+        //    if (ticketComment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketComment);
+        //}
 
         // GET: TicketComments/Create
         [Authorize(Roles = "Admin, Project Manager, Developer, Submitter")]
@@ -72,16 +75,7 @@ namespace BugTracker.Controllers
                     {
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
-                }
-                //for submitter - verify that they created this ticket
-                //else if (User.IsInRole("Submitter"))
-                //{
-                //    if (!ticket.OwnerUserId.Equals(userId))
-                //    {
-                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //    }
-                //}
-                //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
+                }              
                 else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -90,11 +84,7 @@ namespace BugTracker.Controllers
 
             var model = new TicketComment();
             model.TicketId = ticketId;
-            //var query = from p in db.Tickets
-            //            where p.Id == ticketId
-            //            select p.Title;
             ViewBag.ticketTitle = ticket.Title;
-                //query.FirstOrDefault();
             return View(model);
         }
 
@@ -129,63 +119,63 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketComments/Edit/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketComment ticketComment = db.TicketComments.Find(id);
-            if (ticketComment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketComment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketComment ticketComment = db.TicketComments.Find(id);
+        //    if (ticketComment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketComment);
+        //}
 
         // POST: TicketComments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(ticketComment).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(ticketComment);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(ticketComment).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(ticketComment);
+        //}
 
         // GET: TicketComments/Delete/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketComment ticketComment = db.TicketComments.Find(id);
-            if (ticketComment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketComment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketComment ticketComment = db.TicketComments.Find(id);
+        //    if (ticketComment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketComment);
+        //}
 
         // POST: TicketComments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            TicketComment ticketComment = db.TicketComments.Find(id);
-            db.TicketComments.Remove(ticketComment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    TicketComment ticketComment = db.TicketComments.Find(id);
+        //    db.TicketComments.Remove(ticketComment);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

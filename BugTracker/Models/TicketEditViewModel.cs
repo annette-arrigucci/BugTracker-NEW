@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace BugTracker.Models
 {
+    //creates objects to pass into Edit view of Tickets controller
     public class TicketEditViewModel
     {
         public int Id { get; set; }
@@ -17,25 +18,21 @@ namespace BugTracker.Models
         public string Description { get; set; }
         public DateTimeOffset Created { get; set; }
         public DateTimeOffset? Updated { get; set; }
-        //public int ProjectId { get; set; }
         [Display(Name = "Project")]
         public string ProjectName { get; set; }
 
         [Display(Name = "Assigned to")]
         public string AssignedToUserName { get; set; }
 
-        //[Display(Name = "Project")]
-        //public SelectList Projects { get; set; }
+        //pass SelectLists in for dropdown menus
+        //project isn't editable so isn't included as a SelectList
         [Display(Name = "Type")]
         public SelectList TicketTypes { get; set; }
         [Display(Name = "Priority")]
         public SelectList TicketPriorities { get; set; }
         [Display(Name = "Status")]
         public SelectList TicketStatuses { get; set; }
-        //public SelectList TicketStatuses { get; set; }
 
-        //[Required(ErrorMessage = "Please select a project")]
-        //public int SelectedProject { get; set; }
         [Required(ErrorMessage = "Please select a type")]
         public int SelectedType { get; set; }
         [Required(ErrorMessage = "Please select a priority")]

@@ -7,6 +7,8 @@ using System.Web;
 
 namespace BugTracker.Models
 {
+    //a TicketNotification object is created whenever a notification email is sent to a developer
+    //has methods to add the notification to the database and send the email
     public class TicketNotification
     {
         public int Id { get; set; }
@@ -39,6 +41,7 @@ namespace BugTracker.Models
             string body = "";
             string subject = "";
 
+            //depending on the type of notification, set a different subject line and body for the email
             switch (NotificationType)
             {
                 case "Assign":      subject = "Ticket assigned - " + ticket.Title;

@@ -5,6 +5,7 @@ using System.Web;
 
 namespace BugTracker.Models
 {
+    //Each ticket has a list of TicketHistory objects associated with it describing changes to the ticket
     public class TicketHistory
     {
         public int Id { get; set; }

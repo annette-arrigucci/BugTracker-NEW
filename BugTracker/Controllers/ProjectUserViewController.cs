@@ -53,11 +53,6 @@ namespace BugTracker.Controllers
             
             if (usersToAdd == null)
             {
-                //var usersToRemove = helper.UsersInProject(pId);
-                //foreach (var user in usersToRemove)
-                //{
-                //    helper.RemoveUserFromProject(user, pId);
-                //}
                 return RedirectToAction("Edit", new { projectId = pId });
             }
             else
@@ -80,11 +75,6 @@ namespace BugTracker.Controllers
             
             if (usersToRemove == null)
             {
-                //var usersToRemove = helper.UsersInProject(pId);
-                //foreach (var user in usersToRemove)
-                //{
-                //    helper.RemoveUserFromProject(user, pId);
-                //}
                 return RedirectToAction("Edit", new { projectId = pId });
             }
             else

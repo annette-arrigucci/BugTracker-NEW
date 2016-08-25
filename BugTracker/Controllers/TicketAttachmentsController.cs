@@ -16,28 +16,33 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: TicketAttachments
-        [Authorize(Roles = "Admin")]
-        public ActionResult Index()
-        {
-            return View(db.TicketAttachments.ToList());
-        }
+        //not using many of the scaffolded functions in this version of BugTracker
+        //commenting out the code instead of deleting it in case I need to add features later
+
+        //// GET: TicketAttachments
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Index()
+        //{
+        //    return View(db.TicketAttachments.ToList());
+        //}
+
+        //not using this
 
         // GET: TicketAttachments/Details/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            if (ticketAttachment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketAttachment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+        //    if (ticketAttachment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketAttachment);
+        //}
 
         // GET: TicketAttachments/Create
         [Authorize(Roles = "Admin, Project Manager, Developer, Submitter")]
@@ -74,14 +79,7 @@ namespace BugTracker.Controllers
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 }
-                //for submitter - verify that they created this ticket
-                //else if (User.IsInRole("Submitter"))
-                //{
-                //    if (!ticket.OwnerUserId.Equals(userId))
-                //    {
-                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //    }
-                //}
+                
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
@@ -143,64 +141,70 @@ namespace BugTracker.Controllers
             return View(ticketAttachment);
         }
 
+        //not using this
+
         // GET: TicketAttachments/Edit/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            if (ticketAttachment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketAttachment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+        //    if (ticketAttachment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketAttachment);
+        //}
+
+        //not using this
 
         // POST: TicketAttachments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId,FileUrl")] TicketAttachment ticketAttachment)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(ticketAttachment).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(ticketAttachment);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId,FileUrl")] TicketAttachment ticketAttachment)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(ticketAttachment).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(ticketAttachment);
+        //}
+
+        //not using this
 
         // GET: TicketAttachments/Delete/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            if (ticketAttachment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketAttachment);
-        }
+        //[Authorize(Roles = "Admin")]
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+        //    if (ticketAttachment == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketAttachment);
+        //}
 
         // POST: TicketAttachments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
-            db.TicketAttachments.Remove(ticketAttachment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    TicketAttachment ticketAttachment = db.TicketAttachments.Find(id);
+        //    db.TicketAttachments.Remove(ticketAttachment);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

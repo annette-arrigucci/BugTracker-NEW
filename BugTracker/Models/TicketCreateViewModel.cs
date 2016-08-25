@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace BugTracker.Models
 {
+    //create object to pass into Create view for Tickets
     public class TicketCreateViewModel
     {
         [Required(ErrorMessage = "Title is required")]
@@ -23,7 +24,7 @@ namespace BugTracker.Models
         public SelectList TicketTypes { get; set; }
         [Display(Name = "Priority")]
         public SelectList TicketPriorities { get; set; }
-        //public SelectList TicketStatuses { get; set; }
+        //status isn't editable for creating tickets
 
         [Required(ErrorMessage = "Please select a project")]
         public int SelectedProject { get; set; }
@@ -31,6 +32,5 @@ namespace BugTracker.Models
         public int SelectedType { get; set; }
         [Required(ErrorMessage = "Please select a priority")]
         public int SelectedPriority { get; set; }
-        //public int SelectedStatus { get; set; }
     }
 }

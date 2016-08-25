@@ -8,6 +8,7 @@ using System.Web;
 
 namespace BugTracker.Models
 {
+    //this class is for when I need to pass human-readable user information into a view
     public class UserInfoViewModel
     {
         public string UserId { get; set; }

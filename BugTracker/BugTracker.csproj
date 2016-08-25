@@ -212,7 +212,6 @@
     <Compile Include="Models\RoleCheckBox.cs" />
     <Compile Include="Models\TicketAssignViewModel.cs" />
     <Compile Include="Models\TicketDetailsViewModel.cs" />
-    <Compile Include="Models\TicketDetailsViewModelComparer.cs" />
     <Compile Include="Models\TicketEditViewModel.cs" />
     <Compile Include="Models\TicketCreateViewModel.cs" />
     <Compile Include="Models\UserInfoViewModel.cs" />
@@ -289,7 +288,10 @@
     <Content Include="Uploads\basketball-1442709-1279x853.jpg" />
     <Content Include="Uploads\book-1558780-1280x960.jpg" />
     <Content Include="Uploads\bug_tracker.JPG" />
+    <Content Include="Uploads\factorial-image.PNG" />
+    <Content Include="Uploads\fb_auth_error.JPG" />
     <Content Include="Uploads\IMG_1235.jpg" />
+    <Content Include="Uploads\palindrome_tester-image.PNG" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

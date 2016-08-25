@@ -100,7 +100,6 @@ namespace BugTracker.Models
         //this returns a list of UserIDs associated with a project
         public List<string> UsersInProject(int projectId)
         {
-            //var userQuery = db.ProjectUsers.Where(p => p.ProjectId == projectId);
             var query = from p in db.ProjectUsers
                         where p.ProjectId == projectId
                         select p.UserId;

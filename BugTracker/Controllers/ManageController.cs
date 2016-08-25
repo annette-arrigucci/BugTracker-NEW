@@ -135,7 +135,6 @@ namespace BugTracker.Controllers
                 //TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 //Logins = await UserManager.GetLoginsAsync(userId),
                 //BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-                //could send the names in this model - need to change the model
             };
             return View(model);
         }

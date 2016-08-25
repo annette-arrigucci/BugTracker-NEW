@@ -19,12 +19,14 @@ namespace BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        //mapping numbers to strings with priorities, statuses and types so I don't have to look up in database
+        //this could change if new priorities, statuses or types are added
         string[] Priorities = { "High", "Medium", "Low", "Critical" };
         string[] Statuses = { "Waiting for support", "Waiting for customer", "Resolved", "On hold", "New" };
         string[] Types = { "Error report", "Feature request", "Service request", "Other" };
 
         // GET: Tickets
-        [Authorize]
+        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
         public ActionResult Index()
         {
             var id = User.Identity.GetUserId();
@@ -34,7 +36,7 @@ namespace BugTracker.Controllers
             if (User.IsInRole("Admin"))
             {
                 var tickets = db.Tickets;
-                ticketDetailsList = transformTickets(db.Tickets.ToList());
+                ticketDetailsList = TransformTickets(db.Tickets.ToList());
                 ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
                 return View(ticketDetailsList);
             }
@@ -54,19 +56,19 @@ namespace BugTracker.Controllers
                         ticketList.AddRange(projTickets);
                     }
                 }             
-                var pmTicketDetailsList = transformTickets(ticketList);
+                var pmTicketDetailsList = TransformTickets(ticketList);
                 ticketDetailsList = ticketDetailsList.Union(pmTicketDetailsList).ToList();
             }
             if (User.IsInRole("Developer"))
             {
                 var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
-                var devDetailsList = transformTickets(tickets.ToList());
+                var devDetailsList = TransformTickets(tickets.ToList());
                 ticketDetailsList = ticketDetailsList.Union(devDetailsList).ToList();
             }
             if (User.IsInRole("Submitter"))
             {
                 var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
-                var subDetailsList = transformTickets(tickets.ToList());
+                var subDetailsList = TransformTickets(tickets.ToList());
                 ticketDetailsList = ticketDetailsList.Union(subDetailsList).ToList();
             }
             //the order gets overriden when datatables.net script is applied
@@ -76,7 +78,7 @@ namespace BugTracker.Controllers
 
         //this calls a ticket directory view where all fields of tickets can be viewed on one page
         //same code as Index view but displays differently in view
-        [Authorize]
+        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
         public ActionResult All()
         {
             var id = User.Identity.GetUserId();
@@ -86,7 +88,7 @@ namespace BugTracker.Controllers
             if (User.IsInRole("Admin"))
             {
                 var tickets = db.Tickets;
-                ticketDetailsList = transformTickets(db.Tickets.ToList());
+                ticketDetailsList = TransformTickets(db.Tickets.ToList());
                 ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
                 return View(ticketDetailsList);
             }
@@ -105,19 +107,19 @@ namespace BugTracker.Controllers
                         ticketList.AddRange(projTickets);
                     }
                 }
-                var pmTicketDetailsList = transformTickets(ticketList);
+                var pmTicketDetailsList = TransformTickets(ticketList);
                 ticketDetailsList = ticketDetailsList.Union(pmTicketDetailsList).ToList();
             }
             if (User.IsInRole("Developer"))
             {
                 var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
-                var devDetailsList = transformTickets(tickets.ToList());
+                var devDetailsList = TransformTickets(tickets.ToList());
                 ticketDetailsList = ticketDetailsList.Union(devDetailsList).ToList();
             }
             if (User.IsInRole("Submitter"))
             {
                 var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
-                var subDetailsList = transformTickets(tickets.ToList());
+                var subDetailsList = TransformTickets(tickets.ToList());
                 ticketDetailsList = ticketDetailsList.Union(subDetailsList).ToList();
             }
             ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
@@ -125,7 +127,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Details/5
-        [Authorize]
+        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -167,14 +169,6 @@ namespace BugTracker.Controllers
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 }
-                //for submitter - verify that they created this ticket
-                //else if (User.IsInRole("Submitter"))
-                //{
-                //    if (!ticket.OwnerUserId.Equals(userId))
-                //    {
-                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //    }
-                //}
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
@@ -189,7 +183,7 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Submitter, Developer, Project Manager, Admin")]
         public ActionResult History(int? id)
         {
             if (id == null)
@@ -231,14 +225,7 @@ namespace BugTracker.Controllers
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 }
-                //for submitter - verify that they created this ticket
-                //else if (User.IsInRole("Submitter"))
-                //{
-                //    if (!ticket.OwnerUserId.Equals(userId))
-                //    {
-                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //    }
-                //}
+               
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
@@ -315,12 +302,12 @@ namespace BugTracker.Controllers
                 {
                     return RedirectToAction("AssignUser", new { id = tId });
                 }
-                //otherwise, 
-                //- update the ticket
+                //otherwise,              
                 //- create entry in ticket history table
                 //- create an entry in ticket notification table
                 //- send an email to the developer who has been assigned the ticket
-                //- if status is New, change to "Waiting for Support"
+                //- update the ticket: if status is New, change to "Waiting for Support" and change its assigned user
+                //- update the database
 
                 else
                 {
@@ -390,6 +377,7 @@ namespace BugTracker.Controllers
             }
         }
 
+        [Authorize(Roles = "Project Manager")]
         public ActionResult ConfirmAssignment()
         {
             return View();
@@ -432,7 +420,7 @@ namespace BugTracker.Controllers
                 db.SaveChanges();
 
                 //update TicketHistories table
-                AddTicketHistoryCreate(ticket);
+                AddTicketHistoryForCreate(ticket);
 
                 return RedirectToAction("Index");
             }
@@ -485,14 +473,7 @@ namespace BugTracker.Controllers
                         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     }
                 }
-                //for submitter - verify that they created this ticket
-                //else if (User.IsInRole("Submitter"))
-                //{
-                //    if (!ticket.OwnerUserId.Equals(userId))
-                //    {
-                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                //    }
-                //}
+               
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
@@ -508,14 +489,13 @@ namespace BugTracker.Controllers
             ticketEdit.Description = ticket.Description;
 
             //setting the default selected values of the TicketEditViewModel to the current values in the ticket
-            //ticketEdit.ProjectId = ticket.ProjectId;
             //the project field is not editable
             var project = db.Projects.Find(ticket.ProjectId);
             ticketEdit.ProjectName = project.Name;
             ticketEdit.SelectedType = ticket.TicketTypeId;
             ticketEdit.SelectedPriority = ticket.TicketPriorityId;
             ticketEdit.SelectedStatus = ticket.TicketStatusId;
-            //ticketEdit.OwnerUserId = ticket.OwnerUserId;
+            //form a username if the ticket has been assigned - otherwise set to "Unassigned"
             if (!string.IsNullOrEmpty(ticket.AssignedToUserId))
             {
                var assignedTo = db.Users.Find(ticket.AssignedToUserId);
@@ -574,32 +554,35 @@ namespace BugTracker.Controllers
             return View(tevModel);
         }
 
+        //Tickets are not supposed to be deleted - their final state is "resolved"
+        //Commenting out code in case I need to add it back later
+
         // GET: Tickets/Delete/5
-        [Authorize(Roles = "Admin, Project Manager")]
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticket);
-        }
+        //[Authorize(Roles = "Admin, Project Manager")]
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Ticket ticket = db.Tickets.Find(id);
+        //    if (ticket == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticket);
+        //}
 
         // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Ticket ticket = db.Tickets.Find(id);
-            db.Tickets.Remove(ticket);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Ticket ticket = db.Tickets.Find(id);
+        //    db.Tickets.Remove(ticket);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {
@@ -610,7 +593,9 @@ namespace BugTracker.Controllers
             base.Dispose(disposing);
         }
 
-        public List<TicketDetailsViewModel> transformTickets(List<Ticket> ticketList)
+        //take a list of Tickets and change them into TicketDetailsViewModel objects that will be passed to
+        //a human-readable Index view
+        public List<TicketDetailsViewModel> TransformTickets(List<Ticket> ticketList)
         {
             var ticketDetailsList = new List<TicketDetailsViewModel>();
             foreach (var ticket in ticketList)
@@ -622,7 +607,7 @@ namespace BugTracker.Controllers
         }
 
         //create a ticket history entry upon creation of a new ticket
-        public void AddTicketHistoryCreate(Ticket ticket)
+        public void AddTicketHistoryForCreate(Ticket ticket)
         {
             var ticketHistory = new TicketHistory();
             ticketHistory.TicketId = ticket.Id;
@@ -642,7 +627,7 @@ namespace BugTracker.Controllers
             db.SaveChanges();
         }
 
-        //create a ticket history entry with editing of a ticket
+        //create a ticket history entry in the database with every field that was edited in the ticket
         //if ticket had any edits, return true
         public bool CheckTicketHistoryEdit(Ticket ticket, TicketEditViewModel editedTicket, string userId)
         {
@@ -685,6 +670,7 @@ namespace BugTracker.Controllers
             return wasEdited;
         }
 
+        //create a new ticket history object in the database
         public void CreateTicketHistory(int ticketId, string userId, string property, string oldValue, string newValue)
         {
             var ticketHistory = new TicketHistory();
@@ -717,8 +703,5 @@ namespace BugTracker.Controllers
             db.TicketHistories.Add(ticketHistory);
             db.SaveChanges();
         }
-
-
-
     }
 }
