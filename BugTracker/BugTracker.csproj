@@ -306,7 +306,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -341,7 +340,6 @@
     <Content Include="Views\ProjectUserView\Edit.cshtml" />
     <Content Include="Views\Shared\_ShowProjectUsers.cshtml" />
     <Content Include="Views\Tickets\Create.cshtml" />
-    <Content Include="Views\Tickets\Delete.cshtml" />
     <Content Include="Views\Tickets\Details.cshtml" />
     <Content Include="Views\Tickets\Edit.cshtml" />
     <Content Include="Views\Tickets\Index.cshtml" />
@@ -349,16 +347,8 @@
     <Content Include="Views\Tickets\All.cshtml" />
     <Content Include="Views\Tickets\ConfirmAssignment.cshtml" />
     <Content Include="Views\TicketComments\Create.cshtml" />
-    <Content Include="Views\TicketComments\Delete.cshtml" />
-    <Content Include="Views\TicketComments\Details.cshtml" />
-    <Content Include="Views\TicketComments\Edit.cshtml" />
-    <Content Include="Views\TicketComments\Index.cshtml" />
     <Content Include="Views\Shared\_ShowComments.cshtml" />
     <Content Include="Views\TicketAttachments\Create.cshtml" />
-    <Content Include="Views\TicketAttachments\Delete.cshtml" />
-    <Content Include="Views\TicketAttachments\Details.cshtml" />
-    <Content Include="Views\TicketAttachments\Edit.cshtml" />
-    <Content Include="Views\TicketAttachments\Index.cshtml" />
     <Content Include="Views\Shared\_ShowAttachments.cshtml" />
     <Content Include="Views\Tickets\History.cshtml" />
     <Content Include="Views\Shared\_ShowProjectTickets.cshtml" />
