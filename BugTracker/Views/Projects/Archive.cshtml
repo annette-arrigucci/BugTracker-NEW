@@ -13,27 +13,29 @@
         <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-
         <dd>
             @Html.DisplayFor(model => model.Description)
         </dd>
+        <dt></dt>
+        <dd>
+            <br />
+            @using (Html.BeginForm("ArchiveConfirmed", "Projects", new { id = Model.Id }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
 
+                <div class="form-actions no-color">
+                    <input type="submit" value="Confirm Archive" class="btn btn-default" />
+                    <br />
+                    <br />
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            }
+        </dd>
     </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Archive" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
 </div>

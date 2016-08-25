@@ -25,7 +25,7 @@ namespace BugTracker.Controllers
             if (User.IsInRole("Admin"))
             {
                 var myList = db.Projects.Where(x => x.IsActive == true).ToList();
-                return View(quickReverse(db.Projects.ToList()));
+                return View(quickReverse(myList));
             }
             else
             {
@@ -148,13 +148,16 @@ namespace BugTracker.Controllers
             }
             else
             {
-                //check that this is one of the PM's assigned projects
-                var helper = new ProjectUserHelper();
-                var userId = User.Identity.GetUserId();
-
-                if (!helper.IsUserInProject(userId, (int)id))
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //if the user is not an admin, check that this is one of the PM's assigned projects
+                if (!User.IsInRole("Admin"))
+                {               
+                    var helper = new ProjectUserHelper();
+                    var userId = User.Identity.GetUserId();
+                    //if PM isn't assigned to project, return a bad request
+                    if (!helper.IsUserInProject(userId, (int)id))
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
                 }
             }
             return View(project);
@@ -172,22 +175,24 @@ namespace BugTracker.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin, Project Manager, Developer, Submitter")]
         public ActionResult ArchivedProjects()
         {
-            //perform a join on the Projects table with the ProjectUsers lookup table
-            //to retrieve all the projects a user is associated with
+            
             var id = User.Identity.GetUserId();
+            //Admin can view all inactive projects
             if (User.IsInRole("Admin"))
             {
                 var myList = db.Projects.Where(x => x.IsActive == false).ToList();
-                return View(quickReverse(db.Projects.ToList()));
+                return View(quickReverse(myList));
             }
             else
+            //perform a join on the Projects table with the ProjectUsers lookup table
+            //to retrieve the inactive projects a user is associated with
             {
                 var projects = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
-                var activeProjects = projects.Where(x => x.IsActive == false).ToList();
-                return View(quickReverse(activeProjects.ToList()));
+                var myArchivedProjects = projects.Where(x => x.IsActive == false).ToList();
+                return View(quickReverse(myArchivedProjects.ToList()));
             }
         }
 
