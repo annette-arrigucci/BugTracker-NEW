@@ -62,8 +62,7 @@
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
                @Html.AntiForgeryToken()
-               @*@Html.HiddenFor(m => m.Email, new { @value="annette_c_a@yahoo.com", @class = "form-control" })
-               @Html.HiddenFor(m => m.Password, new { @value = "Abc&123!", @class = "form-control" })*@
+             
                <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="SubmitterEmail" name="Email" type="hidden" value="annette_c_a@yahoo.com" />
                 <input class="form-control" data-val="true" data-val-required="The Password field is required." id="SubmitterPassword" name="Password" type="hidden" value="Abc&1234!"/>
                 <div class="form-group">
@@ -80,15 +79,48 @@
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
             @Html.AntiForgeryToken()
-            @*@Html.HiddenFor(m => m.Email, new { @value="annette_c_a@yahoo.com", @class = "form-control" })
-                @Html.HiddenFor(m => m.Password, new { @value = "Abc&123!", @class = "form-control" })*@
-            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="DeveloperEmail" name="Email" type="hidden" value="annette.arrigucci@outlook.com" />
+         
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="DeveloperEmail" name="Email" type="hidden" value="johnfrancis@mailinator.com" />
             <input class="form-control" data-val="true" data-val-required="The Password field is required." id="DeveloperPassword" name="Password" type="hidden" value="Abc&123!" />
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" value="Demo as Developer" class="btn btn-default" />
                     </div>
                 </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+            @Html.AntiForgeryToken()
+           
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="ProjectManagerEmail" name="Email" type="hidden" value="epalmer@coderfoundry.com" />
+            <input class="form-control" data-val="true" data-val-required="The Password field is required." id="ProjectManagerPassword" name="Password" type="hidden" value="Abc&123!" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Demo as Project Manager" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+            @Html.AntiForgeryToken()
+          
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="AdminEmail" name="Email" type="hidden" value="bdavis@coderfoundry.com" />
+            <input class="form-control" data-val="true" data-val-required="The Password field is required." id="AdminPassword" name="Password" type="hidden" value="Abc&123!" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Demo as Admin" class="btn btn-default" />
+                </div>
+            </div>
         }
     </div>
 </div>

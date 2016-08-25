@@ -27,7 +27,7 @@
             @Html.DisplayNameFor(model => model.Created)
         </dt>
         <dd>
-            @TimeZoneInfo.ConvertTime(Model.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+            @TimeZoneInfo.ConvertTime(Model.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Updated)
@@ -35,7 +35,7 @@
         <dd>
             @if (Model.Updated != null)
             {
-                @TimeZoneInfo.ConvertTime((DateTimeOffset)Model.Updated, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+                @TimeZoneInfo.ConvertTime((DateTimeOffset)Model.Updated, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
             }
         </dd>
         <dt>

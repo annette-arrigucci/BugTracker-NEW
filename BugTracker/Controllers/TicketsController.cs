@@ -141,9 +141,10 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             var helper = new ProjectUserHelper();
 
-            //if user is not an admin, who is able to view all tickets, check if they are a project manager, developer or submitter 
-            //and allowed to view the ticket. If not, redirect them to a "bad request" page
-            if (!User.IsInRole("Admin"))
+            //if user is not an admin, who is able to view all tickets, or the creator of the ticket, who is able to view and edit the ticket,
+            //check if they are a project manager or developer who is authorized to view and edit the ticket 
+            //If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin") && !ticket.OwnerUserId.Equals(userId))
             {
                 //for PM, verify it is in one of their assigned projects
                 if (User.IsInRole("Project Manager"))
@@ -167,13 +168,13 @@ namespace BugTracker.Controllers
                     }
                 }
                 //for submitter - verify that they created this ticket
-                else if (User.IsInRole("Submitter"))
-                {
-                    if (!ticket.OwnerUserId.Equals(userId))
-                    {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                    }
-                }
+                //else if (User.IsInRole("Submitter"))
+                //{
+                //    if (!ticket.OwnerUserId.Equals(userId))
+                //    {
+                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //    }
+                //}
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
@@ -204,9 +205,10 @@ namespace BugTracker.Controllers
             var userId = User.Identity.GetUserId();
             var helper = new ProjectUserHelper();
 
-            //if user is not an admin, who is able to view all tickets, check if they are a project manager, developer or submitter 
-            //and allowed to view the ticket. If not, redirect them to a "bad request" page
-            if (!User.IsInRole("Admin"))
+            //if user is not an admin, who is able to view all tickets, or the creator of the ticket, who is able to view and edit the ticket,
+            //check if they are a project manager or developer who is authorized to view and edit the ticket 
+            //If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin") && !ticket.OwnerUserId.Equals(userId))
             {
                 //for PM, verify it is in one of their assigned projects
                 if (User.IsInRole("Project Manager"))
@@ -230,19 +232,19 @@ namespace BugTracker.Controllers
                     }
                 }
                 //for submitter - verify that they created this ticket
-                else if (User.IsInRole("Submitter"))
-                {
-                    if (!ticket.OwnerUserId.Equals(userId))
-                    {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                    }
-                }
+                //else if (User.IsInRole("Submitter"))
+                //{
+                //    if (!ticket.OwnerUserId.Equals(userId))
+                //    {
+                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //    }
+                //}
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
-            }           
+            }
             ViewBag.ticketTitle = ticket.Title;
             ViewBag.ticketId = ticket.Id;
             var model = ticket.TicketHistories.OrderByDescending(x => x.ChangeDate);
@@ -457,7 +459,10 @@ namespace BugTracker.Controllers
                 return HttpNotFound();
             }
 
-            if (!User.IsInRole("Admin"))
+            //if user is not an admin, who is able to view all tickets, or the creator of the ticket, who is able to view and edit the ticket,
+            //check if they are a project manager or developer who is authorized to view and edit the ticket 
+            //If not, redirect them to a "bad request" page
+            if (!User.IsInRole("Admin") && !ticket.OwnerUserId.Equals(userId))
             {
                 //for PM, verify it is in one of their assigned projects
                 if (User.IsInRole("Project Manager"))
@@ -481,13 +486,13 @@ namespace BugTracker.Controllers
                     }
                 }
                 //for submitter - verify that they created this ticket
-                else if (User.IsInRole("Submitter"))
-                {
-                    if (!ticket.OwnerUserId.Equals(userId))
-                    {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                    }
-                }
+                //else if (User.IsInRole("Submitter"))
+                //{
+                //    if (!ticket.OwnerUserId.Equals(userId))
+                //    {
+                //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //    }
+                //}
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {

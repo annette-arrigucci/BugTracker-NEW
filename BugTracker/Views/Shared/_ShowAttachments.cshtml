@@ -23,7 +23,7 @@
                 <b>Added by @userName</b>
             }
             <br />
-            <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b>
+            <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")</b>
             <p>
                 @if (User.IsInRole("Admin"))
                 {

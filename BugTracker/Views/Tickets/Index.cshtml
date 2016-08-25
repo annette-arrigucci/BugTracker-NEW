@@ -68,7 +68,7 @@
                     @*@Html.DisplayFor(modelItem => item.Created)*@
                     @*//this works to display local time but will use the same method I used to display update time to be consistent*@
                     @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt")*@
-                    @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+                    @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
                 </td>
                 @*<td>*@
                     @*@Html.DisplayFor(modelItem => item.Updated)*@

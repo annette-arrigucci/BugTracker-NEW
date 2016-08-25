@@ -13,7 +13,7 @@
     foreach (var item in Model)
     {
         <p>
-            <b>@TimeZoneInfo.ConvertTime(item.ChangeDate, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b><br />
+            <b>@TimeZoneInfo.ConvertTime(item.ChangeDate, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")</b><br />
             <!--Special display format only for Created entry-->
             @if (item.PropertyChanged.Equals("Created"))
             {
