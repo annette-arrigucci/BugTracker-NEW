@@ -17,9 +17,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Created)
             </th>
@@ -52,24 +49,16 @@
         {
             <tr>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Title)*@
                     @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
                 </td>
-                @*<td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>*@
+                
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Created)*@
-                    @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt") //this works to display local time but
-                        //will use the same method I used to display update time to be consistent*@
                     @TimeZoneInfo.ConvertTime((DateTimeOffset)item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
                 </td>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Updated)*@
                     @if (item.Updated != null)
                 {
                         @TimeZoneInfo.ConvertTime((DateTimeOffset)item.Updated, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
-                        @*@item.Updated.ToLocalTime().ToString("M/d/yy h:mm tt")// this doesn't work with a nullable DateTimeOffset*@
                     }
                 </td>
                 <td>
@@ -142,6 +131,7 @@
     </tfoot>
 </table>
 
+@*Using DataTables.Net for search, sort, ordering and filtering functions - long script is used for filtering*@
 @section Scripts
 {
     <script type="text/javascript" src="~/DataTables/datatables.js"></script>

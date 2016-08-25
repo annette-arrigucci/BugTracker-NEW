@@ -86,13 +86,6 @@
             @Html.DisplayFor(model => model.TicketDetails.OwnerName)
         </dd>
 
-        @*<dt>
-            @Html.DisplayNameFor(model => model.Ticket.AssignedToUserId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Ticket.AssignedToUserId)
-        </dd>*@
     </dl>
 
         @using (Html.BeginForm("AssignUser", "Tickets", new { tId = Model.TicketDetails.Id, SelectedUser = Model.SelectedUser }, FormMethod.Post))
@@ -104,7 +97,6 @@
                     @Html.DisplayNameFor(model => model.ProjUsersList)
                 </dt>    
                 <dd>
-                    @*@Html.DropDownList("SelectedUser", Model.ProjUsersList)*@
                     @Html.DropDownListFor(model => model.SelectedUser, Model.ProjUsersList, "-Select User-", new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.SelectedUser, "", new { @class = "text-danger" })
                 </dd>    
