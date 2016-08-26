@@ -25,6 +25,109 @@ namespace BugTracker.Controllers
         string[] Statuses = { "Waiting for support", "Waiting for customer", "Resolved", "On hold", "New" };
         string[] Types = { "Error report", "Feature request", "Service request", "Other" };
 
+        // GET: Get the user's dashboard view
+        [Authorize]
+        public ActionResult Dashboard()
+        {
+            var id = User.Identity.GetUserId();
+            var ticketDetailsList = new List<TicketDetailsViewModel>();
+            var updatedList = new List<Ticket>();
+            var createdList = new List<Ticket>();
+
+            // if admin, view all tickets
+            if (User.IsInRole("Admin"))       
+            {
+                 var tickets = db.Tickets;
+                 var updatedTickets = db.Tickets.Where(x => x.Updated != null).OrderByDescending(x => x.Updated).ToList();
+                 var createdTickets = db.Tickets.Where(x => x.Updated == null).OrderByDescending(x => x.Created).ToList();
+                 if(updatedTickets.Count >= 5)
+                {
+                    updatedList = updatedTickets.Take(5).ToList();
+                }
+                 else
+                {
+                    updatedList = updatedTickets;
+                }
+                if (createdTickets.Count >= 5)
+                {
+                    createdList = createdTickets.Take(5).ToList();
+                }
+                else
+                {
+                   createdList = createdTickets;
+                }               
+                 var mostRecent = GetMostRecent(updatedList, createdList, 0, 0);
+                 ticketDetailsList = TransformTickets(mostRecent);
+                    //ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
+                 return View(ticketDetailsList);
+            }
+                //otherwise, go through each role a user can be in and add the tickets that can be viewed in each
+                //The Union method is used to eliminate duplicate entries in which user both owns the ticket is 
+                //assigned the ticket or is PM for the ticket - the Equals method is overriden in the TicketDetailsViewModel
+                else if (User.IsInRole("Project Manager"))
+                {
+                    var query = db.Projects.Where(x => x.ProjectUsers.Any(y => y.UserId == id));
+                    var projects = query.ToList();
+                    var ticketList = new List<Ticket>();
+                    if (projects.Count > 0)
+                    {
+                        foreach (Project p in projects)
+                        {
+                            var projTickets = p.Tickets;
+                            ticketList.AddRange(projTickets);
+                        }
+                    }
+                    var pmTicketDetailsList = TransformTickets(ticketList);
+                    ticketDetailsList = ticketDetailsList.Union(pmTicketDetailsList).ToList();
+                }
+                if (User.IsInRole("Developer"))
+                {
+                    var tickets = db.Tickets.Where(x => x.AssignedToUserId == id);
+                    var devDetailsList = TransformTickets(tickets.ToList());
+                    ticketDetailsList = ticketDetailsList.Union(devDetailsList).ToList();
+                }
+                if (User.IsInRole("Submitter"))
+                {
+                    var tickets = db.Tickets.Where(x => x.OwnerUserId == id);
+                    var subDetailsList = TransformTickets(tickets.ToList());
+                    ticketDetailsList = ticketDetailsList.Union(subDetailsList).ToList();
+                }
+                //the order gets overriden when datatables.net script is applied
+                ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
+                return View(ticketDetailsList);
+            }
+
+        public List<Ticket> GetMostRecent(List<Ticket> Updated, List<Ticket> Created, int updateIndex, int createdIndex)
+        {
+            if (createdIndex >= 4 || updateIndex >= 4 || createdIndex >= (Created.Count -1)  || updateIndex >= (Updated.Count - 1))
+            {
+                if (Updated.Count >= 5)
+                {
+                    return Updated.Take(5).ToList();
+                }
+                else
+                {
+                    return Updated;
+                }
+            }
+            else
+            {
+                var created = Created[createdIndex];
+                for (var i = updateIndex; i < Updated.Count; i++)
+                {
+                    if (created.Created > Updated[i].Updated)
+                    {
+                        Updated.Insert(i, created);
+                        updateIndex = i + 1;
+                        break;
+                    }
+                }
+                createdIndex++;
+                GetMostRecent(Updated, Created, updateIndex, createdIndex);
+                return null;
+            }
+        }
+
         // GET: Tickets
         [Authorize]
         public ActionResult Index()

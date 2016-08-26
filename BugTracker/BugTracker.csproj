@@ -354,6 +354,7 @@
     <Content Include="Views\Tickets\History.cshtml" />
     <Content Include="Views\Shared\_ShowProjectTickets.cshtml" />
     <Content Include="Views\Projects\ArchivedProjects.cshtml" />
+    <Content Include="Views\Tickets\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

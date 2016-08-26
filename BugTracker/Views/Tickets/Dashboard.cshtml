@@ -1,0 +1,110 @@
+﻿@model IEnumerable<BugTracker.Models.TicketDetailsViewModel>
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+@*This view shows the most important ticket information about the user's tickets -
+    go to "All" view for full ticket information in a table*@
+<br />
+<p>
+    @if (User.IsInRole("Submitter"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+</p>
+<br />
+<table class="table" id="tickets-table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+
+            <th>
+                Created
+            </th>
+
+            <th>
+                Project
+            </th>
+
+            <th class="select-filter">
+                Priority
+            </th>
+            <th class="select-filter">
+                Status
+            </th>
+            <th>
+                Assigned To
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
+                </td>
+
+                <td>
+                    @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectTitle)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketPriority)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignedToUserName)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    @Html.Raw("<br>")
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+
+                    @if (User.IsInRole("Project Manager"))
+                    {
+                        @Html.Raw("<br>")
+                        @Html.ActionLink("Assign", "AssignUser", new { id = item.Id })
+                    }
+                    @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>
+            </th>
+
+            <th>
+            </th>
+
+            <th>
+            </th>
+
+            <th>
+                Priority
+            </th>
+
+            <th>
+                Status
+            </th>
+
+            <th>
+            </th>
+
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
