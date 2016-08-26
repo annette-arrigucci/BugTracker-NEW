@@ -153,3 +153,4 @@ C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.Twitt
 C:\Users\Me\projects\BugTracker-new\BugTracker\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.dll
 C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.pdb
+C:\Users\Me\projects\BugTracker-new\BugTracker\obj\Debug\BugTracker.csprojResolveAssemblyReference.cache
