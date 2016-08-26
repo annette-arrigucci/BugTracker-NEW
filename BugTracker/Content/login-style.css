@@ -1,0 +1,46 @@
+﻿.btn-demo {
+    width: 100% !important;
+    margin-bottom: 15px !important; 
+}
+
+#demo-buttons{
+    margin-top: 15px !important;
+}
+
+h1 {
+    font-size: 72px;
+}
+
+#big-title {
+    padding: 50px !important;
+    background-color: #ffffff; 
+    margin-right: 30px;
+    border-radius: 10px;
+}
+
+body {
+     background-color: #3e648d !important;
+}
+
+#sign-in {
+    background-color: #ffffff;
+    padding: 75px !important;
+    border-radius: 10px;
+}
+
+#form-section {
+    margin-top: 40px;
+}
+
+#login-form  {
+    margin-top: 15px;
+}
+
+#plug-portfolio {
+    margin-top: 70px;
+}
+
+#about-link{
+    color: #666666;
+    font-size: 16px;
+}

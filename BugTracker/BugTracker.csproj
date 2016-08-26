@@ -239,6 +239,7 @@
     <Content Include="Content\edit-roles.css" />
     <Content Include="Content\form-style.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\login-style.css" />
     <Content Include="DataTables\DataTables-1.10.12\css\dataTables.bootstrap.css" />
     <Content Include="DataTables\DataTables-1.10.12\css\dataTables.bootstrap.min.css" />
     <Content Include="DataTables\DataTables-1.10.12\css\dataTables.foundation.css" />
