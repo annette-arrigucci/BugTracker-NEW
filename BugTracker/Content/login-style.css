@@ -8,7 +8,7 @@
 }
 
 h1 {
-    font-size: 72px;
+    font-size: 72px !important;
 }
 
 #big-title {
