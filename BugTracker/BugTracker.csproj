@@ -207,6 +207,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUserViewModel.cs" />
+    <Compile Include="Models\ProjectInfoViewModel.cs" />
     <Compile Include="Models\ProjectUserHelper.cs" />
     <Compile Include="Models\ProjectUserViewModel.cs" />
     <Compile Include="Models\RoleCheckBox.cs" />
@@ -269,6 +270,7 @@
     <Content Include="DataTables\datatables.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\project-icon.png" />
     <Content Include="Global.asax" />
     <Content Include="Content\bs-style\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
@@ -356,6 +358,7 @@
     <Content Include="Views\Shared\_ShowProjectTickets.cshtml" />
     <Content Include="Views\Projects\ArchivedProjects.cshtml" />
     <Content Include="Views\Tickets\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_DashboardShowProjects.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

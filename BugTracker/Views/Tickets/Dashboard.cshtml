@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<BugTracker.Models.TicketDetailsViewModel>
+@using BugTracker.Models
+@using Microsoft.AspNet.Identity;
+
 @{
     ViewBag.Title = "Dashboard";
 }
@@ -102,3 +105,17 @@
     </tfoot>
 </table>
     @Html.ActionLink("See ticket index", "Index", "Tickets")
+
+@{
+    var myHelper = new ProjectUserHelper();
+    var userId = User.Identity.GetUserId();
+    var projectList = myHelper.ListUserProjects(userId);
+    var projectInfoList = new List<ProjectInfoViewModel>;
+    foreach(var project in projectList)
+    {
+        var projInfo = new ProjectInfoViewModel(userId, project.Id);
+        projectInfoList.Add(projInfo);
+    }
+
+}
+@Html.Partial("_ShowProjectUsers", projectInfoList)
