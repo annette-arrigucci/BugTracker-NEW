@@ -11,7 +11,7 @@ namespace BugTracker.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            return RedirectToAction("Index", "Tickets", null);
+            return RedirectToAction("Dashboard", "Tickets", null);
             //return View();
         }
 
