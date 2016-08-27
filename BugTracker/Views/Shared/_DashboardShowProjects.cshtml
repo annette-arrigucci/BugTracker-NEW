@@ -3,8 +3,22 @@
 
 
 <h4>Project Tickets</h4>
-
-<table class="table" id="project-tickets-table">
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <col-md-3>
+                <img src="~/fonts/project-icon.png" alt="project" />
+                <br />
+                <span>@item.ProjectName</span><br />
+                <span>Tickets: @item.NumUserTicketsForProject</span><br />
+                <span>Critical: @item.NumUserCriticalTickets</span><br />
+                <span>Resolved: @item.NumUserResolvedTickets</span><br />
+            </col-md-3>
+        }
+    </div>
+</div>
+@*<table class="table" id="project-tickets-table">
     <thead>
         <tr>
             <th>
@@ -63,4 +77,4 @@
             </tr>
         }
     </tbody>
-</table>
+</table>*@

@@ -59,12 +59,12 @@ namespace BugTracker.Models
             }
             if (helper.IsUserInRole(UserId, "Developer"))
             {
-                var devTicketList = db.Tickets.Where(x => x.AssignedToUserId == id).ToList();
+                var devTicketList = db.Tickets.Where(x => x.AssignedToUserId == UserId).ToList();
                 myTickets = myTickets.Union(devTicketList).ToList();
             }
             if (helper.IsUserInRole(UserId, "Submitter"))
             {
-                var subTicketList = db.Tickets.Where(x => x.OwnerUserId == id).ToList();
+                var subTicketList = db.Tickets.Where(x => x.OwnerUserId == UserId).ToList();
                 myTickets = myTickets.Union(subTicketList).ToList();
             }            
             return myTickets;

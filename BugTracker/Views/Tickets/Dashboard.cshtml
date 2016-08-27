@@ -110,7 +110,7 @@
     var myHelper = new ProjectUserHelper();
     var userId = User.Identity.GetUserId();
     var projectList = myHelper.ListUserProjects(userId);
-    var projectInfoList = new List<ProjectInfoViewModel>;
+    var projectInfoList = new List<ProjectInfoViewModel>();
     foreach(var project in projectList)
     {
         var projInfo = new ProjectInfoViewModel(userId, project.Id);
@@ -118,4 +118,4 @@
     }
 
 }
-@Html.Partial("_ShowProjectUsers", projectInfoList)
+@Html.Partial("_DashboardShowProjects", projectInfoList)
