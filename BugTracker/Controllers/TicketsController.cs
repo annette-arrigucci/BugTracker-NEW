@@ -37,27 +37,52 @@ namespace BugTracker.Controllers
             // if admin, view all tickets
             if (User.IsInRole("Admin"))       
             {
-                 var tickets = db.Tickets;
-                 var updatedTickets = db.Tickets.Where(x => x.Updated != null).OrderByDescending(x => x.Updated).ToList();
-                 var createdTickets = db.Tickets.Where(x => x.Updated == null).OrderByDescending(x => x.Created).ToList();
-                 if(updatedTickets.Count >= 5)
+                //calculate the recency of each ticket that we can see
+                var ticketRecencyList = new List<TicketTimeDifference>();
+                foreach (var ticket in db.Tickets)
                 {
-                    updatedList = updatedTickets.Take(5).ToList();
+                    var ttSpan = new TicketTimeDifference();
+                    ttSpan.TicketId = ticket.Id;
+                    //if the ticket was updated, use that value for recency
+                    if (ticket.Updated != null)
+                    {
+                        ttSpan.TimeDifferenceFromNow = DateTimeOffset.Now.Subtract((DateTimeOffset)ticket.Updated);
+                    }
+                    //otherwise use the created date
+                    else
+                    {
+                        ttSpan.TimeDifferenceFromNow = DateTimeOffset.Now.Subtract((DateTimeOffset)ticket.Created);
+                    }
+                    ticketRecencyList.Add(ttSpan);
                 }
-                 else
+                // var updatedTickets = db.Tickets.Where(x => x.Updated != null).OrderByDescending(x => x.Updated).ToList();
+                // var createdTickets = db.Tickets.Where(x => x.Updated == null).OrderByDescending(x => x.Created).ToList();
+                // if(updatedTickets.Count >= 5)
+                //{
+                //    updatedList = updatedTickets.Take(5).ToList();
+                //}
+                // else
+                //{
+                //    updatedList = updatedTickets;
+                //}
+                //if (createdTickets.Count >= 5)
+                //{
+                //    createdList = createdTickets.Take(5).ToList();
+                //}
+                //else
+                //{
+                //   createdList = createdTickets;
+                //}               
+                // var mostRecent = GetMostRecent(updatedList, createdList, 0, 0);
+                //order the list by the most recent, then get the top 5 tickets to display
+                var mostRecent = ticketRecencyList.OrderBy(x => x.TimeDifferenceFromNow).ToList();
+                var recentList = new List<Ticket>();
+                for(int i = 0; i < 5; i++)
                 {
-                    updatedList = updatedTickets;
+                    var ticket = db.Tickets.Find(mostRecent[i].TicketId);
+                    recentList.Add(ticket);
                 }
-                if (createdTickets.Count >= 5)
-                {
-                    createdList = createdTickets.Take(5).ToList();
-                }
-                else
-                {
-                   createdList = createdTickets;
-                }               
-                 var mostRecent = GetMostRecent(updatedList, createdList, 0, 0);
-                 ticketDetailsList = TransformTickets(mostRecent);
+                 ticketDetailsList = TransformTickets(recentList);
                     //ticketDetailsList = ticketDetailsList.OrderByDescending(x => x.Created).ToList();
                  return View(ticketDetailsList);
             }
@@ -115,7 +140,7 @@ namespace BugTracker.Controllers
                 var created = Created[createdIndex];
                 for (var i = updateIndex; i < Updated.Count; i++)
                 {
-                    if (created.Created > Updated[i].Updated)
+                    if (created.Created.CompareTo((DateTimeOffset)Updated[i].Updated) > 0)
                     {
                         Updated.Insert(i, created);
                         updateIndex = i + 1;
@@ -124,7 +149,7 @@ namespace BugTracker.Controllers
                 }
                 createdIndex++;
                 GetMostRecent(Updated, Created, updateIndex, createdIndex);
-                return null;
+                return Updated;
             }
         }
 

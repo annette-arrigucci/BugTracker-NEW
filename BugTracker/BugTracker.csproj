@@ -214,6 +214,7 @@
     <Compile Include="Models\TicketDetailsViewModel.cs" />
     <Compile Include="Models\TicketEditViewModel.cs" />
     <Compile Include="Models\TicketCreateViewModel.cs" />
+    <Compile Include="Models\TicketTimeDifference.cs" />
     <Compile Include="Models\UserInfoViewModel.cs" />
     <Compile Include="Models\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
