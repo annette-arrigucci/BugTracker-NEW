@@ -44,9 +44,9 @@ namespace BugTracker.Models
                 {
                     //var titleQuery = db.Projects.Where(p => p.Id.Equals(project));
                     var query = from p in db.Projects
-                                where p.Id == project.Id
+                                where p.Id == project.ProjectId
                                 select p;
-                    foreach (var a in query)
+                    foreach (var a in query.ToList())
                     {
                         projectsList.Add(a);
                     }
@@ -54,6 +54,14 @@ namespace BugTracker.Models
             }
             return projectsList;
         }
+        //return all active projects
+        public List<Project> GetAllProjects()
+        {
+            var projQuery = db.Projects.Where(x => x.IsActive == true);
+            var projList = projQuery.ToList();         
+            return projList;
+        }
+
         public bool AddUserToProject(string userId, int projectId)
         {
             ProjectUser pUser = new ProjectUser { UserId = userId, ProjectId = projectId };

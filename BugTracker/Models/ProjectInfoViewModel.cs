@@ -19,14 +19,19 @@ namespace BugTracker.Models
             var db = new ApplicationDbContext();
             this.UserId = userId;
             this.ProjectId = projectId;
+            var project = db.Projects.Where(x => x.Id == projectId).First();
+            this.ProjectName = project.Name;
             var tickets = FindUserTickets();
-            var projTickets = tickets.Where(x => x.ProjectId == ProjectId).ToList();
+            var helper = new UserRolesHelper();
+            var projTickets = tickets.Where(x => x.ProjectId == projectId).ToList();
+            
             this.NumUserTicketsForProject = projTickets.Count;
             var critical = db.TicketPriorities.Where(x => x.Name.Equals("Critical")).First();
             this.NumUserCriticalTickets = projTickets.Where(x => x.TicketPriorityId == critical.Id).Count();
             var resolved = db.TicketStatuses.Where(x => x.Name.Equals("Resolved")).First();
             this.NumUserResolvedTickets = projTickets.Where(x => x.TicketStatusId == resolved.Id).Count();
         }
+
         public List<Ticket> FindUserTickets()
         {
             var db = new ApplicationDbContext();

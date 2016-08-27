@@ -238,6 +238,7 @@
   <ItemGroup>
     <Content Include="Content\bs-style\bootstrap.css" />
     <Content Include="Content\bs-style\bootstrap.min.css" />
+    <Content Include="Content\dashboard-style.css" />
     <Content Include="Content\edit-roles.css" />
     <Content Include="Content\form-style.css" />
     <Content Include="Content\PagedList.css" />

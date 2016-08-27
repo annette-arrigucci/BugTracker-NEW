@@ -6,6 +6,9 @@
     ViewBag.Title = "Dashboard";
 }
 
+<link rel="stylesheet" href="~/Content/dashboard-style.css" />
+
+
 <h2>Dashboard</h2>
 
 @*This view shows the most important ticket information about the user's tickets -
@@ -104,18 +107,31 @@
     <tfoot>
     </tfoot>
 </table>
-    @Html.ActionLink("See ticket index", "Index", "Tickets")
+@Html.ActionLink("See ticket index", "Index", "Tickets")
 
 @{
     var myHelper = new ProjectUserHelper();
     var userId = User.Identity.GetUserId();
-    var projectList = myHelper.ListUserProjects(userId);
-    var projectInfoList = new List<ProjectInfoViewModel>();
-    foreach(var project in projectList)
+    var projectList = new List<Project>();
+    if (!User.IsInRole("Admin"))
     {
-        var projInfo = new ProjectInfoViewModel(userId, project.Id);
-        projectInfoList.Add(projInfo);
+        projectList = myHelper.ListUserProjects(userId);
     }
-
+    //if user as an admin, return all projects
+    else
+    {
+        projectList = myHelper.GetAllProjects();
+    }
+    var projectInfoList = new List<ProjectInfoViewModel>();
+    foreach (var project in projectList)
+    {
+        //check if the project is an active project; if not don't include it on the dashboard
+        if (project.IsActive == true)
+        {
+            var projInfo = new ProjectInfoViewModel(userId, project.Id);
+            projectInfoList.Add(projInfo);
+        }
+    }
 }
+
 @Html.Partial("_DashboardShowProjects", projectInfoList)

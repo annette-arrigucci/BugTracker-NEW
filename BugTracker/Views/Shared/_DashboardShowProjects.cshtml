@@ -2,22 +2,21 @@
 @using BugTracker.Models
 
 
-<h4>Project Tickets</h4>
-<div class="container">
-    <div class="row">
+<h4>Project Tickets</h4>       
         @foreach (var item in Model)
         {
-            <col-md-3>
-                <img src="~/fonts/project-icon.png" alt="project" />
+            var projectUrl = "http://aarrigucci-bugtracker.azurewebsites.net/Projects/Details/" + item.ProjectId;
+            <div class="col-sm-3">
+                <a href="@projectUrl"><img src="~/fonts/project-icon.png" alt="project" /></a> 
                 <br />
-                <span>@item.ProjectName</span><br />
-                <span>Tickets: @item.NumUserTicketsForProject</span><br />
-                <span>Critical: @item.NumUserCriticalTickets</span><br />
-                <span>Resolved: @item.NumUserResolvedTickets</span><br />
-            </col-md-3>
+                <div class="project-info">
+                    <a href="@projectUrl">@item.ProjectName</a><br />
+                    <span>Tickets: @item.NumUserTicketsForProject</span><br />
+                    <span>Critical: @item.NumUserCriticalTickets</span><br />
+                    <span>Resolved: @item.NumUserResolvedTickets</span><br />
+                </div>
+            </div>
         }
-    </div>
-</div>
 @*<table class="table" id="project-tickets-table">
     <thead>
         <tr>
