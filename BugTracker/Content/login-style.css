@@ -22,6 +22,16 @@ body {
      background-color: #3e648d !important;
 }
 
+h2
+{
+    line-height: 1.4 !important;
+}
+
+h4
+{
+    line-height: 2 !important;
+}
+
 #sign-in {
     background-color: #ffffff;
     padding: 75px !important;
@@ -38,9 +48,4 @@ body {
 
 #plug-portfolio {
     margin-top: 70px;
-}
-
-#about-link{
-    color: #666666;
-    font-size: 16px;
 }
