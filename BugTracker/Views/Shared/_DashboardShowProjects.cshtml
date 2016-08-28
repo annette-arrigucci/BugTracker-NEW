@@ -2,18 +2,20 @@
 @using BugTracker.Models
 
 
-<h4>Project Tickets</h4>       
-        @foreach (var item in Model)
-        {
-            var projectUrl = "http://aarrigucci-bugtracker.azurewebsites.net/Projects/Details/" + item.ProjectId;
-            <div class="col-sm-3">
-                <a href="@projectUrl"><img src="~/fonts/project-icon.png" alt="project" /></a> 
-                <br />
-                <div class="project-info">
-                    <a href="@projectUrl">@item.ProjectName</a><br />
-                    <span>Tickets: @item.NumUserTicketsForProject</span><br />
-                    <span>Critical: @item.NumUserCriticalTickets</span><br />
-                    <span>Resolved: @item.NumUserResolvedTickets</span><br />
-                </div>
+<h2>Projects</h2>    
+<div class="row">
+    @foreach (var item in Model)
+    {
+        var projectUrl = "http://aarrigucci-bugtracker.azurewebsites.net/Projects/Details/" + item.ProjectId;
+        <div class="col-sm-3">
+            <a href="@projectUrl"><img src="~/fonts/project-icon.png" alt="project" /></a>
+            <br />
+            <div class="project-info">
+                <a href="@projectUrl">@item.ProjectName</a><br />
+                <span>Tickets: @item.NumUserTicketsForProject</span><br />
+                <span>Critical: @item.NumUserCriticalTickets</span><br />
+                <span>Resolved: @item.NumUserResolvedTickets</span><br />
             </div>
-        }
+        </div>
+    }
+</div>

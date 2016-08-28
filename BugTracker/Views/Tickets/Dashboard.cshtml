@@ -8,20 +8,20 @@
 
 <link rel="stylesheet" href="~/Content/dashboard-style.css" />
 
-
-<h2>Dashboard</h2>
+<div class="row">
+    <h1 class="col-lg-6 col-lg-offset-3">My Dashboard</h1>
+</div>
 
 @*This view shows the most important ticket information about the user's tickets -
     go to "All" view for full ticket information in a table*@
 
-<h2>Most recent tickets</h2>
-
-<p>
+<h2>Recently updated tickets</h2>
+@*<p>
     @if (User.IsInRole("Submitter"))
     {
-        @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Create New", "Create", new { htmlAttributes = new { @class = "btn btn-default" } })
     }
-</p>
+</p>*@
 
 <table class="table table-striped table-hover ">
     <thead>
@@ -107,7 +107,9 @@
     <tfoot>
     </tfoot>
 </table>
-@Html.ActionLink("See ticket index", "Index", "Tickets")
+<p>
+    <h4>@Html.ActionLink("View all tickets", "Index", "Tickets")</h4>
+</p>
 
 @{
     var myHelper = new ProjectUserHelper();
@@ -133,5 +135,9 @@
         }
     }
 }
-
 @Html.Partial("_DashboardShowProjects", projectInfoList)
+<br />
+<p>
+    <h4>@Html.ActionLink("View projects list", "Index", "Projects")</h4>
+</p>
+<br />
