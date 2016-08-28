@@ -5,5 +5,8 @@ h1 {
     font-size: 60px !important;
 }
 h2 {
-    margin-top: 30px !important;
+    margin-top: 40px !important;
+}
+.project-item{
+    margin-top: 15px;
 }

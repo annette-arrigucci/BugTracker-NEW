@@ -520,7 +520,24 @@ namespace BugTracker.Controllers
         public ActionResult Create()
         {
             var ticketView = new TicketCreateViewModel();
-            ticketView.Projects = new SelectList(db.Projects, "Id", "Name");
+
+            var myHelper = new ProjectUserHelper();
+            var userId = User.Identity.GetUserId();
+            //set it so that a user creates a ticket he/she can only select a project he/she is assigned to  
+            var projectList = new List<Project>();
+            if (!User.IsInRole("Admin"))
+            {
+                var projects = myHelper.ListUserProjects(userId);
+                //only allow the user to select from active projects
+                projectList = projects.Where(x => x.IsActive == true).ToList();
+            }
+            //if user as an admin, display all projects
+            else
+            {
+                var allProjects = myHelper.GetAllProjects();
+                projectList = allProjects.Where(x => x.IsActive == true).ToList();
+            }
+            ticketView.Projects = new SelectList(projectList, "Id", "Name");
             ticketView.TicketTypes = new SelectList(db.TicketTypes, "Id", "Name");
             ticketView.TicketPriorities = new SelectList(db.TicketPriorities, "Id", "Name");
             return View(ticketView);
