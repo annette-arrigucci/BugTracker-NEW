@@ -2,10 +2,9 @@
 @{
     ViewBag.Title = "Index";
 }
-
 <h2>Role Assignments</h2>
-
-<table class="table">
+<br />
+<table class="table table-striped table-hover">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.UserName)
@@ -14,7 +13,7 @@
             @Html.DisplayNameFor(model => model.UserEmail)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CurrentRoles)
+            @Html.DisplayName("Current Roles")
         </th>
         <th></th>
     </tr>

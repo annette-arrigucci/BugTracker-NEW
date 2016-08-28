@@ -2,7 +2,15 @@
 @using BugTracker.Models
 
 <h3>Project Tickets</h3>
+<br />
+<p>
 
+    @if (User.IsInRole("Submitter"))
+    {
+        @Html.ActionLink("Create New", "Create", "Tickets", null, null)
+    }
+</p>
+<br />
 <table class="table table-striped table-hover" id="project-tickets-table">
     <thead>
         <tr>
