@@ -241,6 +241,7 @@
     <Content Include="Content\dashboard-style.css" />
     <Content Include="Content\edit-roles.css" />
     <Content Include="Content\form-style.css" />
+    <Content Include="Content\index-style.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\login-style.css" />
     <Content Include="DataTables\DataTables-1.10.12\css\dataTables.bootstrap.css" />

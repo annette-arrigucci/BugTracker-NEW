@@ -1,19 +1,23 @@
 ﻿@model IEnumerable<BugTracker.Models.TicketDetailsViewModel>
 
+<link rel="stylesheet" href="~/Content/index-style.css" />
 <link rel="stylesheet" href="~/DataTables/datatables.min.css" />
 
 @{
     ViewBag.Title = "Tickets";
 }
-
-<h2>Tickets List</h2>
+<div class="row">
+    <h1 class="col-lg-4 col-lg-offset-4">Tickets</h1>
+</div>
 @*This view shows the most important ticket information about the user's tickets - 
     go to "All" view for full ticket information in a table*@
 <br />
 <p>
     @if (User.IsInRole("Submitter"))
     {
-        @Html.ActionLink("Create New", "Create")
+        @*<div class="row">*@
+            <h4>@Html.ActionLink("Create New", "Create")</h4>
+        @*</div>*@
     }
 </p>
 <br />
@@ -62,7 +66,7 @@
                 </td>
               
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority)
+                    @Html.DisplayFor(modelItem => item.TicketPriority)              
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TicketStatus)
@@ -113,7 +117,7 @@
 </table>
 
 <br />
-    @Html.ActionLink("View full ticket directory", "All", "Tickets")
+    <h4>@Html.ActionLink("Search all ticket fields", "All", "Tickets")</h4>
 <br />
 
 @*Using DataTables.Net for search, sort, ordering and filtering functions - long script is used for filtering*@
