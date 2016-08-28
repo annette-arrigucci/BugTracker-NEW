@@ -271,6 +271,7 @@
     <Content Include="DataTables\datatables.min.css" />
     <Content Include="DataTables\datatables.min.js" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\attachment_icon.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\project-icon.png" />
     <Content Include="Global.asax" />

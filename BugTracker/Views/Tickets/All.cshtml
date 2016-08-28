@@ -4,14 +4,21 @@
     ViewBag.Title = "Tickets";
 }
 
+<link rel="stylesheet" href="~/Content/index-style.css" />
 <link rel="stylesheet" href="~/DataTables/datatables.min.css" />
 
-<h2>Tickets Directory</h2>
+<h2>Search Tickets</h2>
 
+<br />
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (User.IsInRole("Submitter"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
 </p>
-<table class="table" id="all-tickets">
+<br />
+
+<table class="table table-striped table-hover" id="all-tickets">
     <thead>
         <tr>
             <th>

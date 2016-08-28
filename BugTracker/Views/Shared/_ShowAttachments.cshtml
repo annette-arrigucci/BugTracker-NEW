@@ -8,6 +8,7 @@
     {
         if (!string.IsNullOrEmpty(item.FileUrl) && !string.IsNullOrEmpty(item.FileName))
         {
+            <a href="@item.FileUrl" target="_blank"><img src="~/fonts/attachment_icon.png" /></a>
             <a href="@item.FileUrl" target="_blank">@item.FileName</a><br>
         }
         @Html.Raw(item.Description)
