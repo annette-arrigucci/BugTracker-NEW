@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Add attachment</h2>
+<h2>Add Attachment</h2>
 <p>Attachment for "<span>@ViewBag.ticketTitle</span>"</p>
 
 @using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { enctype = "Multipart/form-data" })) 
