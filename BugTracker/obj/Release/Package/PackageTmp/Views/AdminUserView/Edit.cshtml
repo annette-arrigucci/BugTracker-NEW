@@ -7,18 +7,17 @@
 }
 
 <h2>Edit Roles</h2>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control" } })
 
     <div class="form-horizontal">
+        <hr />
         <div class="form-group">
             @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DisplayFor(model => model.UserName, new { htmlAttributes = new { @class = "control-label form-control" } })
-                @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })*@
             </div>
         </div>
 
@@ -26,34 +25,18 @@
             @Html.LabelFor(model => model.UserEmail, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DisplayFor(model => model.UserEmail, new { htmlAttributes = new { @class = "control-label form-control" } })
-                @*@Html.ValidationMessageFor(model => model.UserEmail, "", new { @class = "text-danger" })*@
             </div>
         </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.Roles, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.ListBox("SelectedRoles", Model.Roles)
-                @Html.ValidationMessageFor(model => model.SelectedRoles, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-
+        @*using a checkbox list to set user roles*@
         <div class="form-group">
             @Html.LabelFor(model => model.RolesToSelect, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @for (int i = 0; i < Model.RolesToSelect.Length; i++)
                 {
-                    <p>
-                    @*@Html.CheckBoxFor(m => m.RolesToSelect[i].Checked, new { id = "role_" + (i + 1) })
-                    @Html.HiddenFor(m => m.RolesToSelect[i].RoleName)
-                    @Html.DisplayFor(m => m.RolesToSelect[i].RoleName)*@
-                     @*@Html.CheckBoxFor(x => x.RolesToSelect[i].Checked, new { id = "role_" + (i + 1), @name = "role_" + (i + 1), @value = "role_" + (i + 1) })*@
+                    <p>                  
                      @Html.CheckBoxFor(m => Model.RolesToSelect[i].Checked)
                      @Html.HiddenFor(m => Model.RolesToSelect[i].RoleName)
-                     @Html.DisplayFor(m => Model.RolesToSelect[i].RoleName)
-
-                     @*<input checked="@Model.RolesToSelect[i].Checked" id="@Model.RolesToSelect[i].RoleName" type="checkbox" value="@Model.RolesToSelect[i].RoleName" name="@Model.RolesToSelect[i].RoleName" />
-                     <input type="hidden" value="false" name="@Model.RolesToSelect[i].RoleName" />*@
+                     @Html.DisplayFor(m => Model.RolesToSelect[i].RoleName)              
                    </p>
                 }
             </div>          
@@ -68,5 +51,5 @@
 }
 
         <div>
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to Role Assignments", "Index")
         </div>

@@ -19,8 +19,6 @@
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.Created)
         @Html.HiddenFor(model => model.Updated)
-        @*@Html.HiddenFor(model => model.OwnerUserId)*@
-        @*@Html.HiddenFor(model => model.AssignedToUserId)*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -33,18 +31,17 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @*@Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })*@
                 <textarea data-val="true" data-val-required="Description is required" class="form-control" id="Description" name="Description" rows="4">@Model.Description</textarea>
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-</div>
+            </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <p class="not-editable">
+                    @*project isn't editable after creation of ticket*@
                     @Html.DisplayFor(model => model.ProjectName)
-                    @*@Html.ValidationMessageFor(model => model.SelectedProject, "", new { @class = "text-danger" })*@
                 </p>
             </div>
         </div>
@@ -77,8 +74,8 @@
             @Html.LabelFor(model => model.AssignedToUserName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <!--don't need to check for null case, we assign string "unassigned" in controller for nulls-->
-                @*@Html.DisplayFor(model => model.AssignedToUserName)*@
                 <p class="not-editable">
+                    @*user assignment not editable in this view - follow link to assign the user*@
                     @Model.AssignedToUserName
                 @if (User.IsInRole("Project Manager"))
                 {
@@ -98,5 +95,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to Tickets", "Index")
 </div>

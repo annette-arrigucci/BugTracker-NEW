@@ -12,7 +12,7 @@
 <div>
     <hr />
     <dl class="dl-horizontal">
-        <dt>Name:</dt>
+        <dt>Name</dt>
         <dd>
             @Model.FirstName&nbsp;@Model.LastName
             @*[
@@ -20,12 +20,29 @@
             ]*@
         </dd>
         
-        <dt>Email:</dt>
+        <dt>Email</dt>
         <dd>@Model.Email
             @*[
                 @Html.ActionLink("Create", "SetPassword")
             ]*@
         </dd>
+
+        <dt>My Roles</dt>
+        <dd>
+            @if (Model.CurrentRoles == null || Model.CurrentRoles.Count == 0)
+            {
+                @Html.Raw("None assigned")
+            }
+            else
+            {
+                foreach (var role in Model.CurrentRoles)
+                {
+                    @Html.Raw(role)
+                    @Html.Raw("<br>")
+                }
+            }
+        </dd>
+
         <dt></dt>
         <dd>
             @Html.ActionLink("Edit profile", "EditSettings", null, new { @class = "btn btn-default" })
@@ -38,6 +55,7 @@
                 @Html.ActionLink("Create", "SetPassword", null, new { @class = "btn btn-default" })
             }
         </dd>
+          
         @*<dt>External Logins:</dt>
         <dd>
             @Model.Logins.Count [

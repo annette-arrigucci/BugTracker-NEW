@@ -9,6 +9,7 @@
 <h2>Assign Users</h2>
 
     <div class="form-horizontal">
+        <hr />
         <div class="form-group">
             @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -51,7 +52,10 @@
    }
 
 </div>
-<div>
-    @Html.ActionLink("Back to Projects List", "Index", "Projects")
-</div>
+<p>
+    @Html.ActionLink("Back to Project Details", "Details", "Projects", new { id = Model.ProjectId }, null)
+</p>
+<p>
+    @Html.ActionLink("Back to Projects", "Index", "Projects")
+</p>
 

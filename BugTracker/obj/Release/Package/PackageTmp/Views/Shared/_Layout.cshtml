@@ -21,13 +21,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Dashboard", "Dashboard", "Tickets")</li>
                     <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
                     <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
                     @if (User.IsInRole("Admin"))
                     {
                         <li>@Html.ActionLink("Manage Roles", "Index", "AdminUserView")</li>
                     }
-                    @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -37,7 +37,7 @@
         @RenderBody()
         <hr />
         <footer>
-            @*<p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>*@
+           
         </footer>
     </div>
 

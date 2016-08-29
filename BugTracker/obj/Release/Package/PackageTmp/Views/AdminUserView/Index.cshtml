@@ -2,10 +2,9 @@
 @{
     ViewBag.Title = "Index";
 }
-
 <h2>Role Assignments</h2>
-
-<table class="table">
+<br />
+<table class="table table-striped table-hover">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.UserName)
@@ -14,7 +13,7 @@
             @Html.DisplayNameFor(model => model.UserEmail)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CurrentRoles)
+            @Html.DisplayName("Current Roles")
         </th>
         <th></th>
     </tr>
@@ -41,12 +40,9 @@
                         @Html.Raw("<br>")
                     }
                 }
-                @*@Html.DisplayFor(modelItem => item.RolesList)*@
             </td>
             <td>
-                @Html.ActionLink("Edit Roles", "Edit", new { id = item.UserId })   
-                @*@Html.ActionLink("Details", "Details", new { id = item.UserId })*@
-                @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                @Html.ActionLink("Edit Roles", "Edit", new { id = item.UserId })               
             </td>
         </tr>
     }

@@ -3,7 +3,6 @@
 @using BugTracker.Models;
 
 <div id="show-comments">
-    @*<br /><br />*@
     <h3>Comments</h3>
     @if (Model != null && Model.Any())
     {
@@ -18,7 +17,7 @@
                 <b>Posted by @userName</b>
             }
             <br />
-            <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")</b>
+            <b>@TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")</b>
             <p>
                 @if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
                 {

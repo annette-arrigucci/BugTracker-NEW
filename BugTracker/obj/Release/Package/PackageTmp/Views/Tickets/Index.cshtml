@@ -1,52 +1,48 @@
 ﻿@model IEnumerable<BugTracker.Models.TicketDetailsViewModel>
 
+<link rel="stylesheet" href="~/Content/index-style.css" />
 <link rel="stylesheet" href="~/DataTables/datatables.min.css" />
 
-@*@{
+@{
     ViewBag.Title = "Tickets";
-}*@
-
-<h2>Tickets Dashboard</h2>
-
+}
+<div class="row">
+    <h1 class="col-lg-4 col-lg-offset-4">My Tickets</h1>
+</div>
+@*This view shows the most important ticket information about the user's tickets - 
+    go to "All" view for full ticket information in a table*@
 <br />
 <p>
     @if (User.IsInRole("Submitter"))
     {
-        @Html.ActionLink("Create New", "Create")
+        @*<div class="row">*@
+            <h4>@Html.ActionLink("Create New", "Create")</h4>
+        @*</div>*@
     }
 </p>
 <br />
 
-<table class="table" id="tickets-table">
+<table class="table table-striped table-hover" id="tickets-table">
     <thead>
         <tr>
             <th>
                 Title
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>*@
+            
             <th>
                 Created
             </th>
-            @*<th>
-                Updated
-            </th>*@
+           
             <th>
                 Project
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.TicketType)
-                </th>*@
-            <th>
+           
+            <th class="select-filter">
                Priority
             </th>
-            <th>
+            <th class="select-filter">
                Status
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.OwnerName)
-                </th>*@
             <th>
                 Assigned To
             </th>
@@ -58,41 +54,23 @@
         {
             <tr>
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Title)*@
                     @Html.ActionLink(@item.Title, "Details", new { id = item.Id })
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>*@
+              
                 <td>
-                    @*@Html.DisplayFor(modelItem => item.Created)*@
-                    @*//this works to display local time but will use the same method I used to display update time to be consistent*@
-                    @*@item.Created.ToLocalTime().ToString("M/d/yy h:mm tt")*@
-                    @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
+                    @TimeZoneInfo.ConvertTime(item.Created, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")).ToString("M/d/yy h:mm tt")
                 </td>
-                @*<td>*@
-                    @*@Html.DisplayFor(modelItem => item.Updated)*@
-                    @*@if (item.Updated != null)
-                    {
-                        @TimeZoneInfo.ConvertTime((DateTimeOffset)item.Updated, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt")
-                        @* @item.Updated.ToLocalTime().ToString("M/d/yy h:mm tt")// this doesn't work with a nullable DateTimeOffset*@
-                    @*}*@
-                @*</td>*@
+               
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectTitle)
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.TicketType)
-                    </td>*@
+              
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority)
+                    @Html.DisplayFor(modelItem => item.TicketPriority)              
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TicketStatus)
                 </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.OwnerName)
-                    </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.AssignedToUserName)
                 </td>
@@ -111,20 +89,67 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <th>  
+            </th>
+           
+            <th>  
+            </th>
+           
+            <th>    
+            </th>
+           
+            <th>
+                Priority
+            </th>
+            
+            <th>
+                Status
+            </th>
+           
+            <th>
+            </th>
+            
+            <th></th>
+        </tr>
+    </tfoot>
 </table>
 
 <br />
-    @Html.ActionLink("View full ticket directory", "All", "Tickets")
+    <h4>@Html.ActionLink("Search all ticket fields", "All", "Tickets")</h4>
 <br />
 
+@*Using DataTables.Net for search, sort, ordering and filtering functions - long script is used for filtering*@
 @section Scripts
 {
     <script type="text/javascript" src="~/DataTables/datatables.js"></script>
  
     <script>
-        $(document).ready( function () {
-            $('#tickets-table').DataTable( {
-                "order": [[ 1, 'desc' ]]
+        $(document).ready(function () {
+            $('#tickets-table').DataTable({
+                "order": [[1, 'desc']],
+                initComplete: function () {
+                    this.api().columns('.select-filter').every(function () {
+                        var column = this;
+                        var select = $('<select><option value="">-Select-</option></select>')
+                            //.appendTo($(column.footer()).empty())
+                            .appendTo($(column.footer()))
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }             
             });
         });
     </script>

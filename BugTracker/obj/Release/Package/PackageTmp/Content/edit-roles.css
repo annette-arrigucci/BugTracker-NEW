@@ -6,3 +6,7 @@
     padding-top: 0 !important;
 }
 
+select {
+    width: 100% !important;
+}
+
