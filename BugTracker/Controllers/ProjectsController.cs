@@ -48,13 +48,11 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                //return HttpNotFound();
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             if (!User.IsInRole("Admin"))
@@ -64,7 +62,6 @@ namespace BugTracker.Controllers
 
                 if (!helper.IsUserInProject(userId, (int)id))
                 {
-                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                 }
             }
@@ -110,13 +107,11 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
             }
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                //return HttpNotFound();
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             else
@@ -129,7 +124,6 @@ namespace BugTracker.Controllers
 
                     if (!helper.IsUserInProject(userId, (int)id))
                     {
-                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                         return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
@@ -159,13 +153,11 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }           
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                //return HttpNotFound();
                 return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             else
@@ -178,7 +170,6 @@ namespace BugTracker.Controllers
                     //if PM isn't assigned to project, return a bad request
                     if (!helper.IsUserInProject(userId, (int)id))
                     {
-                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                         return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }

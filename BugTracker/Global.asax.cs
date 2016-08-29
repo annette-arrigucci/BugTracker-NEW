@@ -17,13 +17,5 @@ namespace BugTracker
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
-
-        protected void Application_Error(Object sender, EventArgs e)
-        {
-            var raisedException = Server.GetLastError();
-            ExceptionContext ec = new ExceptionContext();
-            // Process exception
-            ec.Result = new ViewResult { ViewName = "~/Views/Error/Index.cshtml" };
-        }
     }
 }

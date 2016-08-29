@@ -63,7 +63,6 @@ namespace BugTracker.Controllers
                 {
                     if (!helper.IsUserInProject(userId, ticket.ProjectId))
                     {
-                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                         return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
@@ -77,7 +76,6 @@ namespace BugTracker.Controllers
                     }
                     else if (!ticket.AssignedToUserId.Equals(userId))
                     {
-                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                         return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
@@ -85,7 +83,6 @@ namespace BugTracker.Controllers
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
-                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                     return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                 }
             }
