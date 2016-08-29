@@ -43,26 +43,40 @@
         var userInfoList = myHelper.getUserInfo(userList);
         var projectTicketList = new List<Ticket>();
         //if user is an Admin or PM, show all the tickets in the project
-        if(User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+        if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
         {
-            projectTicketList = myHelper.getTicketsinProject(Model.Id);
+           projectTicketList = myHelper.getTicketsinProject(Model.Id);
         }
         //otherwise, get only the tickets the user is assigned to as a developer or has created
-        else if(User.IsInRole("Developer") || User.IsInRole("Submitter"))
+        else
         {
-            var projTickets = myHelper.getTicketsinProject(Model.Id);
-            foreach(var ticket in projTickets)
-            {
-                //need to check for nulls here
-                if (ticket.AssignedToUserId.Equals(User.Identity.GetUserId()) || ticket.OwnerUserId.Equals(User.Identity.GetUserId()))
-                {
-                    projectTicketList.Add(ticket);
+           if (User.IsInRole("Developer") || User.IsInRole("Submitter"))
+           {
+               var projTickets = myHelper.getTicketsinProject(Model.Id);
+               foreach (var ticket in projTickets)
+               {
+                  //if the user owns the ticket, add it to their list for this project
+                  if(ticket.OwnerUserId.Equals(User.Identity.GetUserId()))
+                  {
+                      projectTicketList.Add(ticket);
+                  }
+                  //otherwise, if it's assigned, check if it is assigned to this user
+                  else
+                  {
+                      if(!string.IsNullOrEmpty(ticket.AssignedToUserId))
+                      {
+                          if(ticket.AssignedToUserId.Equals(User.Identity.GetUserId()))
+                          {
+                             projectTicketList.Add(ticket);
+                          }
+                       }
+                   }
                 }
-            }
-        }
-     }
-     @Html.Partial("_ShowProjectUsers", userInfoList, new ViewDataDictionary { { "projectId", Model.Id } })
-    
+             }
+          }
+    }
+                @Html.Partial("_ShowProjectUsers", userInfoList, new ViewDataDictionary { { "projectId", Model.Id } })
+
     @*only PM or Admin can see the list of tickets and their assignments*@
     
     @*@if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
