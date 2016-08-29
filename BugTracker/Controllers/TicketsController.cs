@@ -94,37 +94,6 @@ namespace BugTracker.Controllers
             return View(recentTicketDetailsList);
          }
 
-        //public List<Ticket> GetMostRecent(List<Ticket> Updated, List<Ticket> Created, int updateIndex, int createdIndex)
-        //{
-        //    if (createdIndex >= 4 || updateIndex >= 4 || createdIndex >= (Created.Count -1)  || updateIndex >= (Updated.Count - 1))
-        //    {
-        //        if (Updated.Count >= 5)
-        //        {
-        //            return Updated.Take(5).ToList();
-        //        }
-        //        else
-        //        {
-        //            return Updated;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var created = Created[createdIndex];
-        //        for (var i = updateIndex; i < Updated.Count; i++)
-        //        {
-        //            if (created.Created.CompareTo((DateTimeOffset)Updated[i].Updated) > 0)
-        //            {
-        //                Updated.Insert(i, created);
-        //                updateIndex = i + 1;
-        //                break;
-        //            }
-        //        }
-        //        createdIndex++;
-        //        GetMostRecent(Updated, Created, updateIndex, createdIndex);
-        //        return Updated;
-        //    }
-        //}
-
         //return a list of tickets ordered by recency
         public List<Ticket> GetMostRecent(List<Ticket> tickets)
         {
@@ -264,12 +233,14 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             Ticket ticket = db.Tickets.Find(id);
             if (ticket == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
+                //return HttpNotFound();
             }
 
             var userId = User.Identity.GetUserId();
@@ -285,7 +256,8 @@ namespace BugTracker.Controllers
                 {
                     if (!helper.IsUserInProject(userId, ticket.ProjectId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                 //for developer - verify that they have been assigned this ticket
@@ -294,17 +266,20 @@ namespace BugTracker.Controllers
                     //if the ticket is unassigned, return a bad request
                     if (string.IsNullOrEmpty(ticket.AssignedToUserId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                     else if (!ticket.AssignedToUserId.Equals(userId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                 }
             }
             var model = new TicketDetailsViewModel(ticket);
@@ -320,12 +295,14 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
             }
             Ticket ticket = db.Tickets.Find(id);
             if (ticket == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
 
             var userId = User.Identity.GetUserId();
@@ -341,7 +318,8 @@ namespace BugTracker.Controllers
                 {
                     if (!helper.IsUserInProject(userId, ticket.ProjectId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                 //for developer - verify that they have been assigned this ticket
@@ -350,18 +328,21 @@ namespace BugTracker.Controllers
                     //if the ticket is unassigned, return a bad request
                     if (string.IsNullOrEmpty(ticket.AssignedToUserId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                     else if (!ticket.AssignedToUserId.Equals(userId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                 }
             }
             ViewBag.ticketTitle = ticket.Title;
@@ -385,7 +366,8 @@ namespace BugTracker.Controllers
 
             if (!helper.IsUserInProject(userId, ticket.ProjectId))
             {
-               return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
             }
 
             var model = new TicketAssignViewModel();
@@ -409,7 +391,8 @@ namespace BugTracker.Controllers
             }
             if (ticket == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             return View(model);
         }
@@ -584,7 +567,8 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
 
             Ticket ticket = db.Tickets.Find(id);
@@ -593,7 +577,8 @@ namespace BugTracker.Controllers
 
             if (ticket == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
 
             //if user is not an admin, who is able to view all tickets, or the creator of the ticket, who is able to view and edit the ticket,
@@ -606,7 +591,8 @@ namespace BugTracker.Controllers
                 {
                     if (!helper.IsUserInProject(userId, ticket.ProjectId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                 //for developer - verify that they have been assigned this ticket
@@ -615,18 +601,21 @@ namespace BugTracker.Controllers
                     //if the ticket is unassigned, return a bad request
                     if (string.IsNullOrEmpty(ticket.AssignedToUserId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                     else if (!ticket.AssignedToUserId.Equals(userId))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
                
                 //if the user is not a PM, developer or submitter, then they are unassigned and not authorized to view any tickets
                 else
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                 }
             }
 
@@ -852,5 +841,19 @@ namespace BugTracker.Controllers
             db.TicketHistories.Add(ticketHistory);
             db.SaveChanges();
         }
+
+        //protected override void OnException(ExceptionContext filterContext)
+        //{
+            //filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+            //filterContext.Result = RedirectToAction("Index", "Error");
+
+            // OR set the result without redirection:
+            //filterContext.Result = new ViewResult
+            //{
+            //    ViewName = "~/Views/Error/Index.cshtml"
+            //};
+        //}
     }
 }

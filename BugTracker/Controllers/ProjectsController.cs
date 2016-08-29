@@ -48,12 +48,25 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
+            }
+            if (!User.IsInRole("Admin"))
+            {
+                var helper = new ProjectUserHelper();
+                var userId = User.Identity.GetUserId();
+
+                if (!helper.IsUserInProject(userId, (int)id))
+                {
+                    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
+                }
             }
             return View(project);
         }
@@ -97,12 +110,14 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
             }
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             else
             {
@@ -114,7 +129,8 @@ namespace BugTracker.Controllers
 
                     if (!helper.IsUserInProject(userId, (int)id))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
             }
@@ -143,12 +159,14 @@ namespace BugTracker.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }           
             Project project = db.Projects.Find(id);
             if (project == null)
             {
-                return HttpNotFound();
+                //return HttpNotFound();
+                return RedirectToAction("Index", "Error", new { errorMessage = "Not Found" });
             }
             else
             {
@@ -160,7 +178,8 @@ namespace BugTracker.Controllers
                     //if PM isn't assigned to project, return a bad request
                     if (!helper.IsUserInProject(userId, (int)id))
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Not Authorized" });
                     }
                 }
             }
@@ -208,5 +227,19 @@ namespace BugTracker.Controllers
             }
             base.Dispose(disposing);
         }
+
+        //protected override void OnException(ExceptionContext filterContext)
+        //{
+        //    filterContext.ExceptionHandled = true;
+
+            // Redirect on error:
+           //filterContext.Result = RedirectToAction("Index", "Error");
+
+            //// OR set the result without redirection:
+        //    filterContext.Result = new ViewResult
+        //    {
+        //        ViewName = "~/Views/Error/Index.cshtml"
+        //    };
+        //}
     }
 }
