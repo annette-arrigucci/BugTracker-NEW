@@ -27,30 +27,30 @@ textarea {
 
 /*Fixing problem of two-line menu at 991px*/
 @media screen and (min-width: 768px) and (max-width: 991px) {
+    #full-or-mobile-size{
+        display: none;
+    }
+    .admin-buttons {
+        display: initial;
+    }
     .admin-bar {
         display: none;
-    }   
-    .navbar-admin-toggle {
-        position: relative;
-        float: right;
-        margin-right: 15px;
-        padding: 9px 10px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-        background-color: transparent;
-        background-image: none;
-        border: 1px solid transparent;
-        border-radius: 4px;
-}
-
+    }
 }
 @media screen and (min-width: 991px){
-.navbar-admin-toggle {
-    display: none;
+     #full-or-mobile-size{
+        display: initial;
+    }
+     #mid-size{
+        display: none;
+    }
 }
-}
+
 @media screen and (max-width: 768px){
-.navbar-admin-toggle {
-    display: none;
-}
+   #full-or-mobile-size{
+        display: initial;
+    }
+     #mid-size{
+        display: none;
+    }
 }

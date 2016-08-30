@@ -9,31 +9,68 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                
-                @Html.ActionLink("Bug Tracker", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Dashboard", "Dashboard", "Tickets")</li>
-                    <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
-                    <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("Manage Roles", "Index", "AdminUserView")</li>
-                    }
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+    <div id="full-or-mobile-size">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">*@
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Bug Tracker", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+                </div>
+                <div class="navbar-collapse collapse main-menu">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Dashboard", "Dashboard", "Tickets")</li>
+                        <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
+                        <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Manage Roles", "Index", "AdminUserView")</li>
+                        }
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>         
         </div>
     </div>
+
+
+    <div id="mid-size">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">*@
+                    <button type="button" class="navbar-toggle admin-button" data-toggle="collapse" data-target=".admin-bar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Bug Tracker", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Dashboard", "Dashboard", "Tickets")</li>
+                        <li>@Html.ActionLink("Tickets", "Index", "Tickets")</li>
+                        <li>@Html.ActionLink("Projects", "Index", "Projects")</li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Manage Roles", "Index", "AdminUserView")</li>
+                        }
+                    </ul>              
+                </div>
+                @Html.Partial("_LoginPartial")
+            </div>
+           
+        </div>
+    </div>
+
+
+    @*</div>*@
     <div class="container body-content">
         @RenderBody()
         <hr />
