@@ -219,18 +219,5 @@ namespace BugTracker.Controllers
             base.Dispose(disposing);
         }
 
-        //protected override void OnException(ExceptionContext filterContext)
-        //{
-        //    filterContext.ExceptionHandled = true;
-
-            // Redirect on error:
-           //filterContext.Result = RedirectToAction("Index", "Error");
-
-            //// OR set the result without redirection:
-        //    filterContext.Result = new ViewResult
-        //    {
-        //        ViewName = "~/Views/Error/Index.cshtml"
-        //    };
-        //}
     }
 }

@@ -16,12 +16,7 @@
     go to "All" view for full ticket information in a table*@
 
 <h2>Recently updated tickets</h2>
-@*<p>
-    @if (User.IsInRole("Submitter"))
-    {
-        @Html.ActionLink("Create New", "Create", new { htmlAttributes = new { @class = "btn btn-default" } })
-    }
-</p>*@
+
     <table class="table table-striped table-hover ">
         <thead>
             <tr>
