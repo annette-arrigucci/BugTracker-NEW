@@ -47,5 +47,8 @@ h4
 }
 
 #plug-portfolio {
-    margin-top: 70px;
+    margin-top: 40px;
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
+    border: 2px solid #cccccc;
 }

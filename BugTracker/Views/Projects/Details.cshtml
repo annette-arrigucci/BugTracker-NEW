@@ -77,13 +77,9 @@
     }
                 @Html.Partial("_ShowProjectUsers", userInfoList, new ViewDataDictionary { { "projectId", Model.Id } })
 
-    @*only PM or Admin can see the list of tickets and their assignments*@
-    
-    @*@if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
-    {*@
+   
         <br /><br />
         @Html.Partial("_ShowProjectTickets", projectTicketList, new ViewDataDictionary { { "projectId", Model.Id } })
-    @*}*@
     <br /><br />
 
 <p>

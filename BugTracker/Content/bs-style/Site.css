@@ -23,34 +23,3 @@ textarea {
     max-width: 280px;
 }
 
-
-
-/*Fixing problem of two-line menu at 991px*/
-@media screen and (min-width: 768px) and (max-width: 991px) {
-    #full-or-mobile-size{
-        display: none;
-    }
-    .admin-buttons {
-        display: initial;
-    }
-    .admin-bar {
-        display: none;
-    }
-}
-@media screen and (min-width: 991px){
-     #full-or-mobile-size{
-        display: initial;
-    }
-     #mid-size{
-        display: none;
-    }
-}
-
-@media screen and (max-width: 768px){
-   #full-or-mobile-size{
-        display: initial;
-    }
-     #mid-size{
-        display: none;
-    }
-}
