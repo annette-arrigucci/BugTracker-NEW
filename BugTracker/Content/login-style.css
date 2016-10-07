@@ -16,6 +16,7 @@ h1 {
     background-color: #ffffff; 
     margin-right: 30px;
     border-radius: 10px;
+    min-height: 690px;
 }
 
 body {
@@ -36,6 +37,7 @@ h4
     background-color: #ffffff;
     padding: 75px !important;
     border-radius: 10px;
+    min-height: 690px;
 }
 
 #form-section {

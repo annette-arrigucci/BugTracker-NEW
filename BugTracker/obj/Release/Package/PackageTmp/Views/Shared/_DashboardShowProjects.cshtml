@@ -6,12 +6,11 @@
 <div class="row">
     @foreach (var item in Model)
     {
-        var projectUrl = "http://aarrigucci-bugtracker.azurewebsites.net/Projects/Details/" + item.ProjectId;
         <div class="col-sm-3 project-item">
-            <a href="@projectUrl"><img src="~/fonts/project-icon.png" alt="project" /></a>
+            <a href="@Url.Action("Details", "Projects", new { id = item.ProjectId })"><img src="~/fonts/project-icon.png" alt="project" /></a>
             <br />
             <div class="project-info">
-                <b><a href="@projectUrl">@item.ProjectName</a></b><br />
+                <b>@Html.ActionLink(item.ProjectName, "Details", "Projects", new { id = item.ProjectId }, null)</b><br />
                 <span><b>Tickets:</b> @item.NumUserTicketsForProject</span><br />
                 <span><b>Critical:</b> @item.NumUserCriticalTickets</span><br />
                 <span><b>Resolved:</b> @item.NumUserResolvedTickets</span><br />

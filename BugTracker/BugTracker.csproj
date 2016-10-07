@@ -300,16 +300,9 @@
     <Content Include="Uploads\fb_auth_error.JPG" />
     <Content Include="Uploads\IMG_1235.jpg" />
     <Content Include="Uploads\palindrome_tester-image.PNG" />
-    <Content Include="Web.config">
+    <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -364,6 +357,17 @@
     <Content Include="Views\Tickets\Dashboard.cshtml" />
     <Content Include="Views\Shared\_DashboardShowProjects.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
