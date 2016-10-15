@@ -9,6 +9,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BugTracker.Models;
+using System.Web.Security;
+using System.Web.UI;
 
 namespace BugTracker.Controllers
 {
@@ -55,6 +57,7 @@ namespace BugTracker.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
+        [OutputCache(NoStore = true, Location = OutputCacheLocation.None)]
         public ActionResult Login(string returnUrl)
         {
             //So that the user can be referred back to where they were when they click logon
@@ -82,7 +85,7 @@ namespace BugTracker.Controllers
 
             //log in to the application with credentials based on the type of user
             else
-            {
+            {       
                 switch (userType)
                 {
                     case "Submitter":
