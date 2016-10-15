@@ -72,6 +72,10 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DemoLogin(string userType, string returnUrl)
         {
+            var loginModel = new LoginViewModel();
+            var retUrl = returnUrl;
+            Task<ActionResult> actionResult = null;
+
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Login","Account");
@@ -84,10 +88,6 @@ namespace BugTracker.Controllers
             }
             else
             {
-                var loginModel = new LoginViewModel();
-                var retUrl = returnUrl;
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, change to shouldLockout: true
                 switch (userType)
                 {
                     case "Submitter":
@@ -109,7 +109,8 @@ namespace BugTracker.Controllers
                     default:
                         return RedirectToAction("Index", "Error", new { errorMessage = "Invalid login attempt" });
                 }
-                return RedirectToAction("Login", new { model = loginModel, returnUrl = retUrl });
+                actionResult = Login(loginModel, retUrl) as Task<ActionResult>;
+                return await actionResult;
             }         
         }
 
