@@ -65,6 +65,54 @@ namespace BugTracker.Controllers
             return View();
         }
 
+
+        // POST: /Account/DemoLogin
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DemoLogin(string userType, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Login","Account");
+            }
+
+            //if user is already logged in when pressing a demo button, log them off
+            if (Request.IsAuthenticated)
+            {
+                return RedirectToAction("LogOff");
+            }
+            else
+            {
+                var loginModel = new LoginViewModel();
+                var retUrl = returnUrl;
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                switch (userType)
+                {
+                    case "Submitter":
+                        loginModel.Email = "annette_c_a@yahoo.com";
+                        loginModel.Password = "Abc&1234!";
+                        break;
+                    case "Developer":
+                        loginModel.Email = "johnfrancis@mailinator.com";
+                        loginModel.Password = "Abc&123!";
+                        break;
+                    case "Project Manager":
+                        loginModel.Email = "epalmer@coderfoundry.com";
+                        loginModel.Password = "Abc&123!";
+                        break;
+                    case "Admin":
+                        loginModel.Email = "bdavis@coderfoundry.com";
+                        loginModel.Password = "Abc&123!";
+                        break;
+                    default:
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Invalid login attempt" });
+                }
+                return RedirectToAction("Login", new { model = loginModel, returnUrl = retUrl });
+            }         
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]

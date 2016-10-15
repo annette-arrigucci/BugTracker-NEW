@@ -43,13 +43,12 @@
                     <div id="demo-buttons">
                         <div class="row">
                             <div class="col-md-6">
-                                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, null))
+                                @using (Html.BeginForm("DemoLogin", "Account", new { userType = "Submitter", returnUrl = ViewBag.ReturnUrl }, FormMethod.Post, null))
                                 {
                                     @Html.AntiForgeryToken()
 
-                                    <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="SubmitterEmail" name="Email" type="hidden" value="annette_c_a@yahoo.com" />
-                                    <input class="form-control" data-val="true" data-val-required="The Password field is required." id="SubmitterPassword" name="Password" type="hidden" value="Abc&1234!" />
-
+                                    @*<input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="SubmitterEmail" name="Email" type="hidden" value="annette_c_a@yahoo.com" />
+                                    <input class="form-control" data-val="true" data-val-required="The Password field is required." id="SubmitterPassword" name="Password" type="hidden" value="Abc&1234!" />*@
 
                                     <input type="submit" value="Submitter" class="btn btn-default btn-demo" />
 
