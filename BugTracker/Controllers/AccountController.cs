@@ -73,7 +73,6 @@ namespace BugTracker.Controllers
         public async Task<ActionResult> DemoLogin(string userType, string returnUrl)
         {
             var loginModel = new LoginViewModel();
-            var retUrl = returnUrl;
             Task<ActionResult> actionResult = null;
 
             if (!ModelState.IsValid)
@@ -81,11 +80,7 @@ namespace BugTracker.Controllers
                 return RedirectToAction("Login","Account");
             }
 
-            //if user is already logged in when pressing a demo button, log them off
-            if (Request.IsAuthenticated)
-            {
-                return RedirectToAction("LogOff");
-            }
+            //log in to the application with credentials based on the type of user
             else
             {
                 switch (userType)
@@ -109,7 +104,7 @@ namespace BugTracker.Controllers
                     default:
                         return RedirectToAction("Index", "Error", new { errorMessage = "Invalid login attempt" });
                 }
-                actionResult = Login(loginModel, retUrl) as Task<ActionResult>;
+                actionResult = Login(loginModel, returnUrl) as Task<ActionResult>;
                 return await actionResult;
             }         
         }
